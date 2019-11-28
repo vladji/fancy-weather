@@ -1,0 +1,37 @@
+{
+  "name": "fancy-weather",
+  "version": "1.0.0",
+  "description": "fancy-weather-app",
+  "main": "fancy-weather/src/index.js",
+  "scripts": {
+    "dev": "webpack-dev-server --mode development --watch",
+    "build": "webpack --mode production",
+    "lint": "eslint fancy-weather/src/"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rolling-scopes-school/vladji-RS2019Q3.git"
+  },
+  "author": "Vladislav Priakhine vladjislav@gmail.com",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/rolling-scopes-school/vladji-RS2019Q3/issues"
+  },
+  "homepage": "https://github.com/rolling-scopes-school/vladji-RS2019Q3#readme",
+  "devDependencies": {
+    "@babel/core": "^7.7.4",
+    "@babel/preset-env": "^7.7.4",
+    "babel-loader": "^8.0.6",
+    "css-loader": "^3.2.0",
+    "eslint": "^6.7.1",
+    "eslint-config-airbnb-base": "^14.0.0",
+    "eslint-loader": "^3.0.2",
+    "eslint-plugin-import": "^2.18.2",
+    "html-webpack-plugin": "^3.2.0",
+    "mini-css-extract-plugin": "^0.8.0",
+    "script-ext-html-webpack-plugin": "^2.1.4",
+    "webpack": "^4.41.2",
+    "webpack-cli": "^3.3.10",
+    "webpack-dev-server": "^3.9.0"
+  }
+}
