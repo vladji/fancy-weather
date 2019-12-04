@@ -27,10 +27,16 @@ module.exports = {
           'css-loader',
         ],
       },
+      {
+        test: /\.(png|svg|jpg|gif)$/,
+        use: [
+          'file-loader',
+        ],
+      },
     ],
   },
   plugins: [new HtmlWebpackPlugin({
-    title: 'fancy-weather APP',
+    title: 'guessing weather',
     inject: 'head',
   }),
   new MiniCssExtractPlugin({
