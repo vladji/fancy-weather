@@ -45,13 +45,13 @@ export default class Layout {
           <p class="content__head">MINSK, BELARUS</p>
           <p class="content__date">Mon 28 October</p>
           <div class="today flex-block">
-            <p class="today__temperature flex-block digit-big">10<span class="deg-average">&deg;</span></p>
+            <p class="today__temperature flex-block digit-big">${weatherData.today.temperature}<span class="deg-average">&deg;</span></p>
             <div class="today__details-wrap">
               <div class="today__icon-weather"></div>
-              <p class="today__details">overcast</p>
-              <p class="today__details">Feels like: 7°</p>
-              <p class="today__details">Wind: 2 m/s</p>
-              <p class="today__details">Humidity: 83%</p>
+              <p class="today__details">${weatherData.today.summary}</p>
+              <p class="today__details">Feels like: ${weatherData.today.apparentTemperature}&deg;</p>
+              <p class="today__details">Wind: ${weatherData.today.windSpeed} m/s</p>
+              <p class="today__details">Humidity: ${weatherData.today.humidity}%</p>
             </div>
           </div>
           <div class="daily flex-block"></div>
@@ -60,14 +60,16 @@ export default class Layout {
     this.main.innerHTML = markup;
 
     const dailyWeatherBlock = document.querySelector('.daily');
-    for (let i = 0; i < 3; i += 1) {
+
+    for (let i = 0; i < weatherData.daily.length; i += 1) {
       const dailyItem = document.createElement('div');
       dailyItem.classList.add('daily__item');
 
+      // const dailyTemperature = Math.round(weatherData.daily[i].temperatureHigh);
       const dailyItemMarkup = `
-          <p class="daily__item-title">tuesday</p>
+          <p class="daily__item-title">${weatherData.daily[i].weekDay}</p>
           <div class="flex-block">
-            <p class="daily__item-temperature digit-big">${weatherData.daily[i].temperatureHigh}&deg;</p>
+            <p class="daily__item-temperature digit-big">${weatherData.daily[i].averageTemperature}&deg;</p>
             <div class="daily__item-icon-weather"></div>
           </div>
       `;

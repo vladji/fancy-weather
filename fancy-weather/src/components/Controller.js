@@ -1,5 +1,10 @@
 import Model from './Model';
 
+const langBase = {
+  bntSearch: 'Поиск',
+  bntLang: 'Ru',
+};
+
 export default class Controller {
   constructor(layout) {
     this.interface = layout;
@@ -8,20 +13,13 @@ export default class Controller {
     this.listeners();
   }
 
-  start() {
-    const weatherData = this.model.testGetData();
-    console.log('contr data', weatherData);
+  async start() {
+    const weatherData = await this.model.testGetData();
     this.interface.renderApp(weatherData);
   }
 
   listeners() {
-    const langBase = {
-      bntSearch: 'Поиск',
-      bntLang: 'Ru',
-    };
-
     const switchLang = this.interface.changeLang.bind(this.interface);
-    console.log('switchLangBtn', this.switchLangBtn);
     this.switchLangBtn.addEventListener('click', () => {
       switchLang(langBase);
     });

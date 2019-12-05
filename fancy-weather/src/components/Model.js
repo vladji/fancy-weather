@@ -28,16 +28,16 @@ const testData = {
     icon: 'sleet',
     data: [
       {
-        time: 1575320400, icon: 'snow', temperatureHigh: 30.89,
+        time: 1575320400, icon: 'snow', temperatureHigh: 30.89, temperatureLow: 20.86,
       },
       {
-        time: 1575406800, icon: 'cloudy', temperatureHigh: 35.99,
+        time: 1575406800, icon: 'cloudy', temperatureHigh: 35.99, temperatureLow: 20.86,
       },
       {
-        time: 1575493200, summary: 'Foggy in the morning.', temperatureHigh: 34.88,
+        time: 1575493200, icon: 'cloudy', temperatureHigh: 34.88, temperatureLow: 20.86,
       },
       {
-        time: 1575406800, icon: 'del', temperatureHigh: 35.99,
+        time: 1575320400, icon: 'snow', temperatureHigh: 30.89, temperatureLow: 20.86,
       },
       {
         time: 1575493200, summary: 'del', temperatureHigh: 34.88,
@@ -48,6 +48,7 @@ const testData = {
     'meteoalarm-license': 'Based on data from EUMETNET - MeteoAlarm [https://www.meteoalarm.eu/]. Time delays between this website and the MeteoAlarm website are possible; for the most up to date information about alert levels as published by the participating National Meteorological Services please use the MeteoAlarm website.',
   },
 };
+console.log('test', testData);
 
 export default class Model {
   constructor() {
@@ -57,47 +58,84 @@ export default class Model {
     this.wetherApiExclude = 'minutely,hourly,alerts';
     this.lang = 'en';
     this.tempDegree = 'c';
-    // this.getWeatherData();
+    this.isUserRequest = false;
   }
 
   testGetData() {
-    console.log(this.ipApi);
-    const renderData = Model.parseData(testData);
+    console.log(this.lang);
+    const renderData = this.parseData(testData);
     return renderData;
   }
 
-  static parseData(rawData) {
-    const renderData = {
-      today: {
-        currenTime: rawData.currently.time,
-        summary: rawData.currently.summary,
-        apparentTemperature: rawData.currently.apparentTemperature,
-        windSpeed: rawData.currently.windSpeed,
-        humidity: rawData.currently.humidity,
-        icon: rawData.currently.icon,
-      },
-      daily: rawData.daily.data.slice(0, 3),
-    };
-    return renderData;
+  async getLocation() {
+    let requestApi = null;
+    let location = null;
+
+    if (!this.isUserRequest) {
+      requestApi = await fetch(this.ipApi);
+      location = await requestApi.json();
+    }
+    console.log(location);
+    const { loc } = location;
+    const weatherData = await this.getWeatherData(loc);
+    return weatherData;
   }
 
-  async getWeatherData() {
-    const requestIp = await fetch(this.ipApi);
-    const dataLocation = await requestIp.json();
-    console.log(dataLocation);
-    const { city, country, loc } = dataLocation;
-    console.log(city, country, loc);
-
+  getWeatherData(location) {
     const dateNow = new Date();
     const dateNowISO = dateNow.toISOString();
     console.log('dateNowISO', dateNowISO);
 
     const PROXY_URL = 'https://cors-anywhere.herokuapp.com/';
-    // console.log('url', `${PROXY_URL}${this.weatherApi}${loc}`);
-
-    fetch(`${PROXY_URL}${this.weatherApi}${loc}`)
+    const weatherData = fetch(`
+    ${PROXY_URL}${this.weatherApi}${location}?exclude=${this.wetherApiExclude}&units=${this.weatherApiUnits}&lang=${this.lang}
+    `)
       .then((requestWeatherApi) => requestWeatherApi.json())
-      .then((weatherData) => console.log('weatherData', weatherData));
-    // .then((weatherData) => this.interface.renderDataWeather(weatherData));
+      .then((rawData) => {
+        console.log('rawData', rawData);
+        return this.parseData(rawData);
+      });
+    return weatherData;
+  }
+
+  parseData(rawData) {
+    const temperature = Math.round(rawData.currently.temperature);
+    const apparentTemperature = Math.round(rawData.currently.apparentTemperature);
+    const windSpeed = Math.round(rawData.currently.windSpeed);
+    const humidity = +rawData.currently.humidity * 100;
+    const daily = rawData.daily.data.slice(1, 4);
+    const dailyTransform = this.dailyTransform(daily);
+
+    const renderData = {
+      today: {
+        temperature,
+        apparentTemperature,
+        windSpeed,
+        humidity,
+        currenTime: rawData.currently.time,
+        summary: rawData.currently.summary,
+        icon: rawData.currently.icon,
+      },
+      daily: dailyTransform,
+    };
+    return renderData;
+  }
+
+  dailyTransform(data) {
+    const daily = data;
+
+    for (let i = 0; i < daily.length; i += 1) {
+      const { time, temperatureHigh, temperatureLow } = daily[i];
+
+      const timeStampInMs = time * 1000;
+      let weekDay = new Date(timeStampInMs);
+      weekDay = weekDay.toLocaleString(this.lang, { weekday: 'long' });
+      daily[i].weekDay = weekDay;
+
+      const averageTemperature = Math.round((temperatureHigh + temperatureLow) / 2);
+      daily[i].averageTemperature = averageTemperature;
+    }
+
+    return daily;
   }
 }
