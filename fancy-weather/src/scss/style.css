@@ -171,11 +171,11 @@ button {
 .content__head {
   font-size: 2.8em;
   line-height: 2;
-  text-transform: uppercase;
 }
 
 .content__date {
   font-size: 2em;
+  text-transform: uppercase;
 }
 
 .today {
@@ -244,5 +244,10 @@ button {
   background-image: url("../assets/img/icon-weather.png");
   background-repeat: no-repeat;
   background-size: contain;
+}
+
+.map__wrapper {
+  width: 300px;
+  height: 300px;
 }
 /*# sourceMappingURL=style.css.map */

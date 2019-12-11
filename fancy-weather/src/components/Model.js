@@ -1,55 +1,3 @@
-const testData = {
-  latitude: 53.9,
-  longitude: 27.5667,
-  timezone: 'Europe/Minsk',
-  currently: {
-    time: 1575401440,
-    summary: 'Mostly Cloudy',
-    icon: 'partly-cloudy-day',
-    precipIntensity: 0.0031,
-    precipProbability: 0.03,
-    precipType: 'snow',
-    precipAccumulation: 0.0334,
-    temperature: 29.99,
-    apparentTemperature: 22.53,
-    dewPoint: 26.97,
-    humidity: 0.88,
-    pressure: 1020.6,
-    windSpeed: 7.78,
-    windGust: 22.91,
-    windBearing: 111,
-    cloudCover: 0.72,
-    uvIndex: 0,
-    visibility: 6.38,
-    ozone: 271,
-  },
-  daily: {
-    summary: 'Mixed precipitation throughout the week.',
-    icon: 'sleet',
-    data: [
-      {
-        time: 1575320400, icon: 'snow', temperatureHigh: 30.89, temperatureLow: 20.86,
-      },
-      {
-        time: 1575406800, icon: 'cloudy', temperatureHigh: 35.99, temperatureLow: 20.86,
-      },
-      {
-        time: 1575493200, icon: 'cloudy', temperatureHigh: 34.88, temperatureLow: 20.86,
-      },
-      {
-        time: 1575320400, icon: 'snow', temperatureHigh: 30.89, temperatureLow: 20.86,
-      },
-      {
-        time: 1575493200, summary: 'del', temperatureHigh: 34.88,
-      },
-    ],
-  },
-  flags: {
-    'meteoalarm-license': 'Based on data from EUMETNET - MeteoAlarm [https://www.meteoalarm.eu/]. Time delays between this website and the MeteoAlarm website are possible; for the most up to date information about alert levels as published by the participating National Meteorological Services please use the MeteoAlarm website.',
-  },
-};
-console.log('test', testData);
-
 export default class Model {
   constructor() {
     this.ipApi = 'https://ipinfo.io/json?token=8d3889f93dad62';
@@ -63,13 +11,13 @@ export default class Model {
     this.country = null;
     this.city = null;
     this.offsetSec = null;
+    this.dateUNIX = null;
+    this.day = null;
+    this.time = null;
     this.isUserRequest = false;
-  }
-
-  testGetData() {
-    console.log(this.lang);
-    const renderData = this.parseData(testData);
-    return renderData;
+    this.TIME_CONST = 60; // seconds in min & min in hour
+    this.MS_IN_SEC = 1000;
+    this.MS_IN_MIN = 60000;
   }
 
   async getCurrentLocationIP() {
@@ -100,14 +48,33 @@ export default class Model {
     this.location = `${latitude},${longtitude}`;
   }
 
+  getDate() {
+    const deviceTimeStamp = Date.now();
+    const timeZoneOffsetInSec = new Date().getTimezoneOffset() * this.TIME_CONST;
+
+    const dateUnixUTC = (deviceTimeStamp / this.MS_IN_SEC) + timeZoneOffsetInSec;
+    const targetDateUNIX = dateUnixUTC + this.offsetSec;
+    this.dateUNIX = targetDateUNIX;
+
+    const targetDate = new Date(targetDateUNIX * this.MS_IN_SEC);
+    const dayOptions = {
+      weekday: 'short', month: 'long', day: '2-digit',
+    };
+    const timeOptions = {
+      hour: '2-digit', minute: '2-digit',
+    };
+    const day = targetDate.toLocaleString(this.lang, dayOptions);
+    const time = targetDate.toLocaleString(this.lang, timeOptions);
+    this.day = day;
+    this.time = time;
+  }
+
   getWeatherData() {
-    const deviceDate = new Date();
-    const dateISO = deviceDate.toISOString().slice(0, 19);
-    console.log('dateNowISO', dateISO);
+    this.getDate();
 
     const PROXY_URL = 'https://cors-anywhere.herokuapp.com/';
     const weatherData = fetch(`
-    ${PROXY_URL}${this.weatherApi}${this.location}?exclude=${this.wetherApiExclude}&units=${this.weatherApiUnits}&lang=${this.lang}
+    ${PROXY_URL}${this.weatherApi}${this.location}?exclude=${this.wetherApiExclude}&units=${this.weatherApiUnits}&lang=${this.lang}&time=${this.dateUNIX}
     `)
       .then((response) => response.json())
       .then((rawData) => {
@@ -133,6 +100,8 @@ export default class Model {
         humidity,
         country: this.country,
         city: this.city,
+        day: this.day,
+        time: this.time,
         currenTime: rawData.currently.time,
         summary: rawData.currently.summary,
         icon: rawData.currently.icon,
@@ -148,8 +117,8 @@ export default class Model {
     for (let i = 0; i < daily.length; i += 1) {
       const { time, temperatureHigh, temperatureLow } = daily[i];
 
-      const timeStampInMs = time * 1000;
-      let weekDay = new Date(timeStampInMs);
+      const targetTimeStamp = (time + this.offsetSec) * this.MS_IN_SEC;
+      let weekDay = new Date(targetTimeStamp);
       weekDay = weekDay.toLocaleString(this.lang, { weekday: 'long' });
       daily[i].weekDay = weekDay;
 
@@ -158,5 +127,20 @@ export default class Model {
     }
 
     return daily;
+  }
+
+  clockInit(view) {
+    const setTime = () => {
+      this.getDate();
+      view.clockRender(this.day, this.time);
+    };
+
+    const millisecondsRemain = (this.TIME_CONST - new Date().getSeconds()) * this.MS_IN_SEC;
+    setTimeout(() => {
+      setTime();
+      setInterval(() => {
+        setTime();
+      }, this.MS_IN_MIN);
+    }, millisecondsRemain);
   }
 }

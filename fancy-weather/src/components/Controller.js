@@ -16,13 +16,15 @@ export default class Controller {
   }
 
   async start() {
-    await this.model.getCurrentLocationIP();
-    this.contentPrepare();
+    // await this.model.getCurrentLocationIP();
+    // this.contentPrepare();
+    console.log(this.searchBtn);
   }
 
   async contentPrepare() {
     const weatherData = await this.model.getWeatherData();
     this.interface.renderApp(weatherData);
+    this.model.clockInit(this.interface);
   }
 
   listeners() {

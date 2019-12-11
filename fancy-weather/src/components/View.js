@@ -10,16 +10,13 @@ export default class Layout {
     this.main = document.createElement('main');
     this.main.classList.add('flow-blocks-wrapper');
     this.bodyWrapper.append(this.main);
-
     document.body.append(this.bodyWrapper);
+
+    this.clock = null;
   }
 
   renderApp(weatherData) {
     this.mainContentRender(weatherData);
-    // const clock = document.createElement('div');
-    // const date = new Date();
-    // clock.innerHTML = `${date.getHours()}:${date.getMinutes()}`;
-    // bodyWrapper.append(clock);
   }
 
   controlsRender() {
@@ -43,7 +40,7 @@ export default class Layout {
     const markup = `
         <div class="content">
           <p class="content__head">${weatherData.today.city}, ${weatherData.today.country}</p>
-          <p class="content__date">Mon 28 October</p>
+          <p class="content__date">${weatherData.today.day}&emsp;${weatherData.today.time}</p>
           <div class="today flex-block">
             <p class="today__temperature flex-block digit-big">${weatherData.today.temperature}<span class="deg-average">&deg;</span></p>
             <div class="today__details-wrap">
@@ -56,8 +53,12 @@ export default class Layout {
           </div>
           <div class="daily flex-block"></div>
         </div>
+        <aside class="map">
+          <div class="map__wrapper"></div>
+        </aside>
     `;
     this.main.innerHTML = markup;
+    this.clock = document.querySelector('.content__date');
 
     const dailyWeatherBlock = document.querySelector('.daily');
 
@@ -75,6 +76,10 @@ export default class Layout {
       dailyItem.innerHTML = dailyItemMarkup;
       dailyWeatherBlock.append(dailyItem);
     }
+  }
+
+  clockRender(day, time) {
+    this.clock.innerHTML = `${day}&emsp;${time}`;
   }
 
   changeLang(lang) {
