@@ -31,7 +31,7 @@ export default class Layout {
           <button class="btn-controls btn-controls_temp-c">&deg; c</button>
         </div>
         <div class="control-search-wrap"> 
-          <input type="text" placeholder="Search city">
+          <input class="search-field" type="search" placeholder="Search city">
           <button class="btn-controls btn-search" data-lang="bntSearch">search</button>
         </div>
     `;
@@ -42,7 +42,7 @@ export default class Layout {
   mainContentRender(weatherData) {
     const markup = `
         <div class="content">
-          <p class="content__head">MINSK, BELARUS</p>
+          <p class="content__head">${weatherData.today.city}, ${weatherData.today.country}</p>
           <p class="content__date">Mon 28 October</p>
           <div class="today flex-block">
             <p class="today__temperature flex-block digit-big">${weatherData.today.temperature}<span class="deg-average">&deg;</span></p>
@@ -65,7 +65,6 @@ export default class Layout {
       const dailyItem = document.createElement('div');
       dailyItem.classList.add('daily__item');
 
-      // const dailyTemperature = Math.round(weatherData.daily[i].temperatureHigh);
       const dailyItemMarkup = `
           <p class="daily__item-title">${weatherData.daily[i].weekDay}</p>
           <div class="flex-block">

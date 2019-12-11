@@ -10,11 +10,18 @@ export default class Controller {
     this.interface = layout;
     this.model = new Model();
     this.switchLangBtn = document.querySelector('.btn-controls_lang');
+    this.searchField = document.querySelector('.search-field');
+    this.searchBtn = document.querySelector('.btn-search');
     this.listeners();
   }
 
   async start() {
-    const weatherData = await this.model.testGetData();
+    await this.model.getCurrentLocationIP();
+    this.contentPrepare();
+  }
+
+  async contentPrepare() {
+    const weatherData = await this.model.getWeatherData();
     this.interface.renderApp(weatherData);
   }
 
@@ -22,6 +29,16 @@ export default class Controller {
     const switchLang = this.interface.changeLang.bind(this.interface);
     this.switchLangBtn.addEventListener('click', () => {
       switchLang(langBase);
+    });
+
+    this.searchBtn.addEventListener('click', async () => {
+      let query = this.searchField.value.trim();
+      query = query.replace(/\s+/g, ' ');
+
+      if (query) {
+        await this.model.getGeoData(query);
+        this.contentPrepare();
+      }
     });
   }
 }
