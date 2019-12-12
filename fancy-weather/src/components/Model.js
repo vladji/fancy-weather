@@ -1,3 +1,5 @@
+const mapboxgl = require('mapbox-gl/dist/mapbox-gl.js');
+
 export default class Model {
   constructor() {
     this.ipApi = 'https://ipinfo.io/json?token=8d3889f93dad62';
@@ -8,6 +10,8 @@ export default class Model {
     this.lang = 'ru';
     this.tempDegree = 'c';
     this.location = null;
+    this.latitude = null;
+    this.longtitude = null;
     this.country = null;
     this.city = null;
     this.offsetSec = null;
@@ -45,7 +49,10 @@ export default class Model {
     console.log('offsetSec', this.offsetSec);
     const latitude = data.results[0].geometry.lat.toFixed(4);
     const longtitude = data.results[0].geometry.lng.toFixed(4);
+    this.latitude = +latitude;
+    this.longtitude = +longtitude;
     this.location = `${latitude},${longtitude}`;
+    console.log('geo', this.latitude, this.longtitude);
   }
 
   getDate() {
@@ -142,5 +149,16 @@ export default class Model {
         setTime();
       }, this.MS_IN_MIN);
     }, millisecondsRemain);
+  }
+
+  initMap() {
+    mapboxgl.accessToken = 'pk.eyJ1IjoidmxhZGppIiwiYSI6ImNrNDFvdG80NzAzYWkza3J3dDQ3NWk0dGYifQ.DXV2tPqWjUiaS3-cGqim2g';
+    const map = new mapboxgl.Map({
+      container: 'map',
+      style: 'mapbox://styles/mapbox/streets-v11',
+      center: [this.longtitude, this.latitude],
+      zoom: 9,
+    });
+    return map;
   }
 }

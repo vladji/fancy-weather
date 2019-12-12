@@ -8,7 +8,7 @@ export default class Layout {
     this.bodyWrapper.append(this.header);
 
     this.main = document.createElement('main');
-    this.main.classList.add('flow-blocks-wrapper');
+    this.main.classList.add('main-wrapper', 'flow-blocks-wrapper');
     this.bodyWrapper.append(this.main);
     document.body.append(this.bodyWrapper);
 
@@ -16,6 +16,11 @@ export default class Layout {
   }
 
   renderApp(weatherData) {
+    const mapCSS = document.createElement('link');
+    mapCSS.href = 'https://api.tiles.mapbox.com/mapbox-gl-js/v1.6.0/mapbox-gl.css';
+    mapCSS.rel = 'stylesheet';
+    document.head.append(mapCSS);
+
     this.mainContentRender(weatherData);
   }
 
@@ -53,8 +58,8 @@ export default class Layout {
           </div>
           <div class="daily flex-block"></div>
         </div>
-        <aside class="map">
-          <div class="map__wrapper"></div>
+        <aside class="map-wrapper">
+          <div id="map"></div>
         </aside>
     `;
     this.main.innerHTML = markup;
@@ -80,6 +85,20 @@ export default class Layout {
 
   clockRender(day, time) {
     this.clock.innerHTML = `${day}&emsp;${time}`;
+  }
+
+  renderMap() {
+    console.log(this.clock);
+    const mapCSS = document.createElement('link');
+    mapCSS.href = 'https://api.tiles.mapbox.com/mapbox-gl-js/v1.6.0/mapbox-gl.css';
+    mapCSS.rel = 'stylesheet';
+    document.head.append(mapCSS);
+    const mapWrap = document.createElement('div');
+    mapWrap.innerHTML = `
+      <aside class="map-wrapper">
+        <div id="map"></div>
+      </aside>`;
+    document.body.append(mapWrap);
   }
 
   changeLang(lang) {

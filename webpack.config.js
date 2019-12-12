@@ -8,6 +8,7 @@ module.exports = {
   output: {
     filename: 'app.bundle.js',
     path: path.resolve(__dirname, 'dist'),
+    library: 'Model',
   },
   devtool: 'source-map',
   module: {
