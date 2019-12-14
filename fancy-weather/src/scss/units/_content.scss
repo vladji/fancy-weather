@@ -3,19 +3,23 @@
 }
 
 .content {
+  width: 50%;
   font-weight: 600;
   color: #fff;
   text-shadow: 0 0 3px #888;
+
+  @media screen and (max-width: 1001px) {
+    width: 100%;
+  }
 }
 
 .content__head {
   font-size: 2.8em;
-  line-height: 2;
+  margin: 6% 0;
 }
 
 .content__date {
   font-size: 2em;
-  text-transform: uppercase;
 }
 
 .today {
@@ -40,7 +44,7 @@
 .today__details-wrap {
   position: relative;
   margin-left: 30px;
-  font-size: 1.5em;
+  font-size: 1.3em;
   text-transform: uppercase;
 }
 
@@ -59,15 +63,13 @@
 }
 
 .daily__item {
-  width: 33%;
-
   &:not(:last-child) {
     margin-right: 5%;
   }
 }
 
 .daily__item-title {
-  margin-bottom: 10%;
+  margin-bottom: 10px;
   font-size: 1.5em;
   text-transform: uppercase;
 }

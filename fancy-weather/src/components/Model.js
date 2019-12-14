@@ -1,13 +1,47 @@
 const mapboxgl = require('mapbox-gl/dist/mapbox-gl.js');
 
+const langBase = {
+  en: {
+    bntSearch: 'search',
+    todayFeels: 'feels like:',
+    todayWind: 'wind:',
+    todayHumidity: 'humidity:',
+    searchPlaceholder: 'Type place please',
+  },
+  ru: {
+    bntSearch: 'поиск',
+    todayFeels: 'ощущается как:',
+    todayWind: 'скорость ветра:',
+    todayHumidity: 'влажность:',
+    searchPlaceholder: 'Введите место',
+  },
+  be: {
+    bntSearch: 'пошук',
+    todayFeels: 'адчуваецца як:',
+    todayWind: 'хуткасць ветру:',
+    todayHumidity: 'вільготнасць:',
+    searchPlaceholder: 'Увядзіце месца',
+    weekdayShort: {
+
+    },
+    weekdayLong: {
+
+    },
+    month: {
+
+    },
+  },
+};
+
 export default class Model {
-  constructor() {
+  constructor(layout) {
+    this.interface = layout;
     this.ipApi = 'https://ipinfo.io/json?token=8d3889f93dad62';
     this.weatherApi = 'https://api.darksky.net/forecast/987251c0ee515463cce9f694cf4913ad/';
     this.geoLocationApi = 'https://api.opencagedata.com/geocode/v1/json?key=5664a8feeeba4d4e8b5539b7302c030b&limit=1&q=';
     this.weatherApiUnits = 'si';
     this.wetherApiExclude = 'minutely,hourly,alerts';
-    this.lang = 'ru';
+    this.lang = 'en';
     this.tempDegree = 'c';
     this.location = null;
     this.latitude = null;
@@ -16,12 +50,27 @@ export default class Model {
     this.city = null;
     this.offsetSec = null;
     this.dateUNIX = null;
+    this.weekday = null;
     this.day = null;
+    this.month = null;
     this.time = null;
     this.isUserRequest = false;
     this.TIME_CONST = 60; // seconds in min & min in hour
     this.MS_IN_SEC = 1000;
     this.MS_IN_MIN = 60000;
+    this.belTranslateObj = null;
+  }
+
+  getLang() {
+    const langObj = langBase[this.lang];
+    return langObj;
+  }
+
+  switchLang(targetBtn) {
+    const targetLang = targetBtn.dataset.langVal;
+    const currentLang = this.lang;
+    this.lang = targetLang;
+    return { targetLang, currentLang };
   }
 
   async getCurrentLocationIP() {
@@ -37,22 +86,25 @@ export default class Model {
   }
 
   async getGeoData(query) {
-    const url = `${this.geoLocationApi}${query}&language=${this.lang}`;
-    const response = await fetch(url);
-    const data = await response.json();
+    try {
+      const url = `${this.geoLocationApi}${query}&language=${this.lang}`;
+      const response = await fetch(url);
+      const data = await response.json();
 
-    console.log('location', data);
-    this.country = data.results[0].components.country;
-    this.city = data.results[0].components.city
-      || data.results[0].components.county || data.results[0].components.state;
-    this.offsetSec = data.results[0].annotations.timezone.offset_sec;
-    console.log('offsetSec', this.offsetSec);
-    const latitude = data.results[0].geometry.lat.toFixed(4);
-    const longtitude = data.results[0].geometry.lng.toFixed(4);
-    this.latitude = +latitude;
-    this.longtitude = +longtitude;
-    this.location = `${latitude},${longtitude}`;
-    console.log('geo', this.latitude, this.longtitude);
+      this.country = data.results[0].components.country;
+      this.city = data.results[0].components.city
+        || data.results[0].components.county || data.results[0].components.state;
+
+      this.offsetSec = data.results[0].annotations.timezone.offset_sec;
+
+      const latitude = data.results[0].geometry.lat.toFixed(4);
+      const longtitude = data.results[0].geometry.lng.toFixed(4);
+      this.latitude = +latitude;
+      this.longtitude = +longtitude;
+      this.location = `${latitude},${longtitude}`;
+    } catch (err) {
+      this.interface.errorRender('Please try again, and make sure, that you type is correctly');
+    }
   }
 
   getDate() {
@@ -64,16 +116,27 @@ export default class Model {
     this.dateUNIX = targetDateUNIX;
 
     const targetDate = new Date(targetDateUNIX * this.MS_IN_SEC);
-    const dayOptions = {
-      weekday: 'short', month: 'long', day: '2-digit',
-    };
-    const timeOptions = {
-      hour: '2-digit', minute: '2-digit',
-    };
-    const day = targetDate.toLocaleString(this.lang, dayOptions);
-    const time = targetDate.toLocaleString(this.lang, timeOptions);
+
+    const weekday = targetDate.toLocaleString(this.lang, { weekday: 'short' });
+    const weekdayEN = targetDate.toLocaleString('en', { weekday: 'short' });
+
+    const day = targetDate.toLocaleString(this.lang, { day: '2-digit' });
+
+    const month = targetDate.toLocaleString(this.lang, { month: 'long' });
+    const monthEN = targetDate.toLocaleString('en', { month: 'long' });
+
+    const time = targetDate.toLocaleString(this.lang, { hour: '2-digit', minute: '2-digit' });
+
+    this.weekday = weekday[0].toUpperCase() + weekday.slice(1);
+    this.month = month[0].toUpperCase() + month.slice(1);
     this.day = day;
     this.time = time;
+
+    this.belTranslateObj = {
+      weekdayShort: weekdayEN,
+      month: monthEN,
+      weekDayLong: {},
+    };
   }
 
   getWeatherData() {
@@ -81,17 +144,14 @@ export default class Model {
 
     const PROXY_URL = 'https://cors-anywhere.herokuapp.com/';
     const weatherData = fetch(`
-    ${PROXY_URL}${this.weatherApi}${this.location}?exclude=${this.wetherApiExclude}&units=${this.weatherApiUnits}&lang=${this.lang}&time=${this.dateUNIX}
-    `)
+      ${PROXY_URL}${this.weatherApi}${this.location}?exclude=${this.wetherApiExclude}&units=${this.weatherApiUnits}&lang=${this.lang}&time=${this.dateUNIX}
+      `)
       .then((response) => response.json())
-      .then((rawData) => {
-        console.log('rawData', rawData);
-        return this.parseData(rawData);
-      });
+      .then((rawData) => this.contentComposition(rawData));
     return weatherData;
   }
 
-  parseData(rawData) {
+  contentComposition(rawData) {
     const temperature = Math.round(rawData.currently.temperature);
     const apparentTemperature = Math.round(rawData.currently.apparentTemperature);
     const windSpeed = Math.round(rawData.currently.windSpeed);
@@ -100,46 +160,54 @@ export default class Model {
     const transformDaily = this.transformDaily(daily);
 
     const renderData = {
-      today: {
+      dataToday: {
         temperature,
         apparentTemperature,
         windSpeed,
         humidity,
         country: this.country,
         city: this.city,
+        weekday: this.weekday,
         day: this.day,
+        month: this.month,
         time: this.time,
         currenTime: rawData.currently.time,
         summary: rawData.currently.summary,
         icon: rawData.currently.icon,
       },
-      daily: transformDaily,
+      dataDaily: transformDaily,
     };
     return renderData;
   }
 
   transformDaily(data) {
     const daily = data;
+    const belTranslate = this.belTranslateObj.weekdayLong;
 
     for (let i = 0; i < daily.length; i += 1) {
       const { time, temperatureHigh, temperatureLow } = daily[i];
 
       const targetTimeStamp = (time + this.offsetSec) * this.MS_IN_SEC;
-      let weekDay = new Date(targetTimeStamp);
-      weekDay = weekDay.toLocaleString(this.lang, { weekday: 'long' });
-      daily[i].weekDay = weekDay;
+      const weekDay = new Date(targetTimeStamp);
+
+      const weekDayEN = weekDay.toLocaleString('en', { weekday: 'long' });
+      console.log('weekDayEN', weekDayEN);
+      console.log('belTranslateObj model', this.belTranslateObj);
+      belTranslate[weekDayEN] = weekDayEN;
+
+      const weekDayLong = weekDay.toLocaleString(this.lang, { weekday: 'long' });
+      daily[i].weekDay = weekDayLong;
 
       const averageTemperature = Math.round((temperatureHigh + temperatureLow) / 2);
       daily[i].averageTemperature = averageTemperature;
     }
-
     return daily;
   }
 
   clockInit(view) {
     const setTime = () => {
       this.getDate();
-      view.clockRender(this.day, this.time);
+      view.clockRender(this.time);
     };
 
     const millisecondsRemain = (this.TIME_CONST - new Date().getSeconds()) * this.MS_IN_SEC;

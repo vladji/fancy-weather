@@ -6,6 +6,7 @@
   display: flex;
   height: 40px;
   margin: 0 20px 30px 0;
+  font-size: 0.8rem;
 }
 
 .btn-controls {
@@ -24,14 +25,64 @@
   background-size: cover;
 }
 
-.btn-controls_lang {
-  width: 60px;
-  padding: 10px;
+.expand-list-wrapper {
   margin-right: 10px;
-  text-align: left;
-  background-image: url("../assets/img/icon-drop-btn.png");
-  background-position: 75% 50%;
-  background-repeat: no-repeat;
+
+  .btn-controls_lang {
+    position: relative;
+    width: 65px;
+    height: 100%;
+    padding: 10px;
+    text-align: left;
+    background-image: url("../assets/img/icon-drop-btn.png");
+    background-position: 75% 50%;
+    background-repeat: no-repeat;
+    z-index: 10;
+  }
+
+  .expand-list-container {
+    position: relative;
+    top: -5%;
+    overflow: hidden;
+    z-index: 5;
+  }
+
+  .lang-list {
+    position: absolute;
+    top: -82%;
+    width: 100%;
+    background-color: #ccccccd1;
+    border-bottom-right-radius: 4px;
+    border-bottom-left-radius: 4px;
+    box-shadow: 0 0 3px #888;
+    z-index: 11;
+    animation: 0.5s ease-out;
+
+    li {
+      padding: 20%;
+      font-weight: 600;
+      text-transform: uppercase;
+      cursor: pointer;
+    }
+  }
+
+  .show-list {
+    animation-name: expand;
+  }
+
+  .hide-list {
+    animation-name: expand;
+    animation-direction: reverse;
+  }
+
+  @keyframes expand {
+    from {
+      top: -82%;
+    }
+    to {
+      top: 0;
+    }
+  }
 }
 
 .btn-controls_temp-f {
@@ -54,9 +105,16 @@
     width: 60%;
     padding: 12px 20px;
     border: 1px solid #ccc;
+    border: 0;
     border-top-left-radius: 4px;
     border-bottom-left-radius: 4px;
+    color: #fff;
+    background-color: #cccccc38;
     outline: none;
+
+    &::-webkit-input-placeholder {
+      color: #fff;
+    }
   }
 }
 

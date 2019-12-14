@@ -92,18 +92,43 @@ body {
   }
 }
 
-@media screen and (max-width: 470px) {
+@media screen and (max-width: 480px) {
   body {
     font-size: 11px;
   }
 }
 
+@media screen and (max-width: 440px) {
+  body {
+    font-size: 10px;
+  }
+}
+
+@media screen and (max-width: 399px) {
+  body {
+    font-size: 9px;
+  }
+}
+
+@media screen and (max-width: 340px) {
+  body {
+    font-size: 8px;
+  }
+}
+
 .body-wrapper {
+  width: 90%;
   height: 100vh;
   -webkit-box-sizing: border-box;
           box-sizing: border-box;
   margin: 0 auto;
-  padding: 6%;
+  padding: 4% 6%;
+}
+
+@media screen and (max-width: 1100px) {
+  .body-wrapper {
+    padding: 6%;
+  }
 }
 
 @media screen and (max-width: 1001px) {
@@ -162,6 +187,7 @@ button {
   display: flex;
   height: 40px;
   margin: 0 20px 30px 0;
+  font-size: 0.8rem;
 }
 
 .btn-controls {
@@ -180,14 +206,77 @@ button {
   background-size: cover;
 }
 
-.btn-controls_lang {
-  width: 60px;
-  padding: 10px;
+.expand-list-wrapper {
   margin-right: 10px;
+}
+
+.expand-list-wrapper .btn-controls_lang {
+  position: relative;
+  width: 65px;
+  height: 100%;
+  padding: 10px;
   text-align: left;
   background-image: url("../assets/img/icon-drop-btn.png");
   background-position: 75% 50%;
   background-repeat: no-repeat;
+  z-index: 10;
+}
+
+.expand-list-wrapper .expand-list-container {
+  position: relative;
+  top: -5%;
+  overflow: hidden;
+  z-index: 5;
+}
+
+.expand-list-wrapper .lang-list {
+  position: absolute;
+  top: -82%;
+  width: 100%;
+  background-color: #ccccccd1;
+  border-bottom-right-radius: 4px;
+  border-bottom-left-radius: 4px;
+  -webkit-box-shadow: 0 0 3px #888;
+          box-shadow: 0 0 3px #888;
+  z-index: 11;
+  -webkit-animation: 0.5s ease-out;
+          animation: 0.5s ease-out;
+}
+
+.expand-list-wrapper .lang-list li {
+  padding: 20%;
+  font-weight: 600;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.expand-list-wrapper .show-list {
+  -webkit-animation-name: expand;
+          animation-name: expand;
+}
+
+.expand-list-wrapper .hide-list {
+  -webkit-animation-name: expand;
+          animation-name: expand;
+  animation-direction: reverse;
+}
+
+@-webkit-keyframes expand {
+  from {
+    top: -82%;
+  }
+  to {
+    top: 0;
+  }
+}
+
+@keyframes expand {
+  from {
+    top: -82%;
+  }
+  to {
+    top: 0;
+  }
 }
 
 .btn-controls_temp-f {
@@ -213,9 +302,16 @@ button {
   width: 60%;
   padding: 12px 20px;
   border: 1px solid #ccc;
+  border: 0;
   border-top-left-radius: 4px;
   border-bottom-left-radius: 4px;
+  color: #fff;
+  background-color: #cccccc38;
   outline: none;
+}
+
+.control-search-wrap input::-webkit-input-placeholder {
+  color: #fff;
 }
 
 .btn-search {
@@ -229,19 +325,25 @@ button {
 }
 
 .content {
+  width: 50%;
   font-weight: 600;
   color: #fff;
   text-shadow: 0 0 3px #888;
 }
 
+@media screen and (max-width: 1001px) {
+  .content {
+    width: 100%;
+  }
+}
+
 .content__head {
   font-size: 2.8em;
-  line-height: 2;
+  margin: 6% 0;
 }
 
 .content__date {
   font-size: 2em;
-  text-transform: uppercase;
 }
 
 .today {
@@ -268,7 +370,7 @@ button {
 .today__details-wrap {
   position: relative;
   margin-left: 30px;
-  font-size: 1.5em;
+  font-size: 1.3em;
   text-transform: uppercase;
 }
 
@@ -286,16 +388,12 @@ button {
   line-height: 1.5;
 }
 
-.daily__item {
-  width: 33%;
-}
-
 .daily__item:not(:last-child) {
   margin-right: 5%;
 }
 
 .daily__item-title {
-  margin-bottom: 10%;
+  margin-bottom: 10px;
   font-size: 1.5em;
   text-transform: uppercase;
 }
@@ -317,7 +415,7 @@ button {
   right: 0;
   width: 40%;
   height: 70%;
-  margin: 30px;
+  margin: 3%;
 }
 
 @media screen and (max-width: 1001px) {
@@ -333,5 +431,20 @@ button {
   width: 100%;
   height: 100%;
   border-radius: 10px;
+}
+
+.error-wrapper {
+  position: absolute;
+  top: 15%;
+  left: 50%;
+  -webkit-transform: translateX(-50%);
+          transform: translateX(-50%);
+  width: 50%;
+  padding: 5%;
+  font-size: 2rem;
+  font-weight: 500;
+  color: #fff;
+  background-color: #888585f2;
+  border-radius: 5px;
 }
 /*# sourceMappingURL=style.css.map */
