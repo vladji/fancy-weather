@@ -291,6 +291,10 @@ button {
   border-bottom-left-radius: 0;
 }
 
+.active-deg {
+  background-color: #00d59e;
+}
+
 .control-search-wrap {
   display: -webkit-box;
   display: -ms-flexbox;

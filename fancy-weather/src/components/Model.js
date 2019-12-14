@@ -42,7 +42,7 @@ export default class Model {
     this.weatherApiUnits = 'si';
     this.wetherApiExclude = 'minutely,hourly,alerts';
     this.lang = 'en';
-    this.tempDegree = 'c';
+    this.tempDeg = 'celsius';
     this.location = null;
     this.latitude = null;
     this.longtitude = null;
@@ -59,6 +59,11 @@ export default class Model {
     this.MS_IN_SEC = 1000;
     this.MS_IN_MIN = 60000;
     this.belTranslateObj = null;
+  }
+
+  checkDeg(deg) {
+    if (deg !== this.tempDeg) this.interface.switchDeg(deg);
+    this.tempDeg = deg;
   }
 
   getLang() {
@@ -103,7 +108,7 @@ export default class Model {
       this.longtitude = +longtitude;
       this.location = `${latitude},${longtitude}`;
     } catch (err) {
-      this.interface.errorRender('Please try again, and make sure, that you type is correctly');
+      this.interface.errorRender('Please try again, and make sure, that your query is correct.');
     }
   }
 
@@ -135,7 +140,6 @@ export default class Model {
     this.belTranslateObj = {
       weekdayShort: weekdayEN,
       month: monthEN,
-      weekDayLong: {},
     };
   }
 
@@ -182,7 +186,6 @@ export default class Model {
 
   transformDaily(data) {
     const daily = data;
-    const belTranslate = this.belTranslateObj.weekdayLong;
 
     for (let i = 0; i < daily.length; i += 1) {
       const { time, temperatureHigh, temperatureLow } = daily[i];
@@ -191,9 +194,7 @@ export default class Model {
       const weekDay = new Date(targetTimeStamp);
 
       const weekDayEN = weekDay.toLocaleString('en', { weekday: 'long' });
-      console.log('weekDayEN', weekDayEN);
-      console.log('belTranslateObj model', this.belTranslateObj);
-      belTranslate[weekDayEN] = weekDayEN;
+      this.belTranslateObj[weekDayEN] = weekDayEN;
 
       const weekDayLong = weekDay.toLocaleString(this.lang, { weekday: 'long' });
       daily[i].weekDay = weekDayLong;

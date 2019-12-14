@@ -41,16 +41,16 @@ export default class Layout {
         <div class="control-bnt-wrap">
           <button class="btn-controls btn-controls_image" data-action="switchImg"></button>
           <div class="expand-list-wrapper">
-            <button class="btn-controls btn-controls_lang" data-action="switchLang">en</button>
+            <button class="btn-controls btn-controls_lang" data-action="expandLangMenu">en</button>
             <div class="expand-list-container">
               <ul class="lang-list">
-                <li data-lang-val="be" data-action="pickLang">by</li>
-                <li data-lang-val="ru" data-action="pickLang">ru</li>
+                <li data-lang-val="be" data-action="switchLang">by</li>
+                <li data-lang-val="ru" data-action="switchLang">ru</li>
               </ul>
             </div>
           </div>
           <button class="btn-controls btn-controls_temp-f" data-deg-val="fahrenheit" data-action="switchDeg">&deg; f</button>
-          <button class="btn-controls btn-controls_temp-c" data-deg-val="celsius" data-action="switchDeg">&deg; c</button>
+          <button class="btn-controls btn-controls_temp-c active-deg" data-deg-val="celsius" data-action="switchDeg">&deg; c</button>
         </div>
         <div class="control-search-wrap"> 
           <input class="search-field" type="text" placeholder="">
@@ -100,7 +100,7 @@ export default class Layout {
       dailyItem.classList.add('daily__item');
 
       const dailyItemMarkup = `
-          <p class="daily__item-title data-bel="weekdayLong"">${daily[i].weekDay}</p>
+          <p class="daily__item-title" data-bel="${daily[i].weekDay}">${daily[i].weekDay}</p>
           <div class="flex-block">
             <p class="daily__item-temperature digit-big">${daily[i].averageTemperature}&deg;</p>
             <div class="daily__item-icon-weather"></div>
@@ -153,6 +153,8 @@ export default class Layout {
   setBelLang(belLang) {
     console.log('test', this.errorWrap);
     console.log('belLang', belLang);
+    const elementBel = document.querySelectorAll('[data-bel]');
+    console.log('elementBel', elementBel);
   }
 
   setBtnLang(buttonsLang, elem) {
@@ -160,6 +162,14 @@ export default class Layout {
     this.langBtn.innerHTML = buttonsLang.targetLang;
     targetBtn.innerHTML = buttonsLang.currentLang;
     targetBtn.dataset.langVal = buttonsLang.currentLang;
+  }
+
+  switchDeg(deg) {
+    console.log(this.clock);
+    const activeElem = document.querySelector('.active-deg');
+    activeElem.classList.remove('active-deg');
+    const targetElem = document.querySelector(`[data-deg-val="${deg}"]`);
+    targetElem.classList.add('active-deg');
   }
 
   errorRender(message) {

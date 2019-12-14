@@ -97,6 +97,10 @@
   border-bottom-left-radius: 0;
 }
 
+.active-deg {
+  background-color: $active_btn;
+}
+
 .control-search-wrap {
   display: flex;
   height: 40px;

@@ -9,14 +9,14 @@ export default class Controller {
   }
 
   async start() {
-    const query = this.checkQuery();
+    // const query = this.checkQuery();
 
-    if (!query) {
-      await this.model.getCurrentLocationIP();
-    } else {
-      await this.model.getGeoData(query);
-    }
-    this.contentPrepare();
+    // if (!query) {
+    //   await this.model.getCurrentLocationIP();
+    // } else {
+    //   await this.model.getGeoData(query);
+    // }
+    // this.contentPrepare();
     console.log(this.searchBtn);
   }
 
@@ -67,10 +67,10 @@ export default class Controller {
     const mode = this.model;
 
     const handlers = {
-      switchLang() {
+      expandLangMenu() {
         view.langMenuToggle();
       },
-      pickLang() {
+      switchLang() {
         const buttonsLang = mode.switchLang(elem);
         view.langMenuToggle();
         view.setBtnLang(buttonsLang, elem);
@@ -78,6 +78,10 @@ export default class Controller {
       },
       userSearch() {
         control.start();
+      },
+      switchDeg() {
+        const deg = elem.dataset.degVal;
+        mode.checkDeg(deg);
       },
     };
 
