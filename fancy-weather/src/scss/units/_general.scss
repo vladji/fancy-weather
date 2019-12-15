@@ -1,74 +1,58 @@
 @import url('https://fonts.googleapis.com/css?family=Montserrat:400,500,600,700&display=swap');
 
 body {
+  height: 100vh;
   font-family: 'Montserrat', sans-serif;
   font-size: 16px;
   background-image: url("../assets/img/bg-1.png");
   background-size: cover;
   background-repeat: no-repeat;
 
-  @media screen and (max-width: 1180px) {
+  @media (max-width: 1180px) {
     font-size: 15px;
   }
 
-  @media screen and (max-width: 1100px) {
+  @media (max-width: 1001px) {
+    height: auto;
+    font-size: 18px;
+  }
+
+  @media (max-width: 540px) {
+    font-size: 15px;
+  }
+
+  @media (max-width: 399px) {
     font-size: 13px;
   }
 
-  @media screen and (max-width: 1001px) {
-    font-size: 15px;
-  }
-
-  @media screen and (max-width: 690px) {
-    font-size: 14px;
-  }
-
-  @media screen and (max-width: 540px) {
+  @media (max-width: 340px) {
     font-size: 12px;
-  }
-
-  @media screen and (max-width: 480px) {
-    font-size: 11px;
-  }
-
-  @media screen and (max-width: 440px) {
-    font-size: 10px;
-  }
-
-  @media screen and (max-width: 399px) {
-    font-size: 9px;
-  }
-
-  @media screen and (max-width: 340px) {
-    font-size: 8px;
   }
 }
 
 .body-wrapper {
   width: 90%;
-  height: 100vh;
   box-sizing: border-box;
   margin: 0 auto;
   padding: 4% 6%;
 
-  @media screen and (max-width: 1100px) {
+  @media (max-width: 1100px) {
     padding: 6%;
   }
 
-  @media screen and (max-width: 1001px) {
+  @media (max-width: 1001px) {
     width: 80%;
-    height: auto;
   }
 
-  @media screen and (max-width: 865px) {
+  @media (max-width: 864px) {
     width: 85%;
   }
 
-  @media screen and (max-width: 770px) {
+  @media (max-width: 770px) {
     width: 90%;
   }
 
-  @media screen and (max-width: 690px) {
+  @media (max-width: 690px) {
     width: 100%;
   }
 }
@@ -79,10 +63,14 @@ body {
   flex-flow: wrap;
 }
 
-button {
-  cursor: pointer;
-}
-
 .flex-block {
   display: flex;
+}
+
+.txt-bold-600 {
+  font-weight: 600;
+}
+
+button {
+  cursor: pointer;
 }

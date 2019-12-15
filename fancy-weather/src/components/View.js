@@ -33,7 +33,16 @@ export default class Layout {
     const mapCSS = document.createElement('link');
     mapCSS.href = 'https://api.tiles.mapbox.com/mapbox-gl-js/v1.6.0/mapbox-gl.css';
     mapCSS.rel = 'stylesheet';
-    document.head.append(mapCSS);
+
+    const metaViewport = document.createElement('meta');
+    metaViewport.name = 'viewport';
+    metaViewport.content = 'width=device-width, initial-scale=1.0';
+
+    const metaCompatible = document.createElement('meta');
+    metaCompatible.httpEquiv = 'X-UA-Compatible';
+    metaCompatible.content = 'ie=edge';
+
+    document.head.append(metaViewport, metaCompatible, mapCSS);
 
     this.mainContentRender(weatherData);
   }
@@ -74,13 +83,25 @@ export default class Layout {
     const markup = `
         <div class="content">
           <p class="content__head">${today.city}, ${today.country}</p>
-          <p class="content__date"><span data-bel="${weatherData.weekDayENshort}">
-              ${today.weekday}</span>&nbsp;${today.day}&nbsp;<span data-bel="${weatherData.monthEN}">${today.month}</span>
-              &emsp;<span class="content__clock">${today.time}</span></p>
+          <div class="content__date">
+            <p class="content__day">
+              <span data-bel="${weatherData.weekDayENshort}">${today.weekday}</span>
+              &nbsp;${today.day}&nbsp;
+              <span data-bel="${weatherData.monthEN}">${today.month}</span>
+            </p>
+            <p>
+              <span class="content__clock">${today.time}</span>
+            </p>
+          </div>
           <div class="today flex-block">
-            <p class="today__temperature flex-block digit-big"><span data-temp>${today.temperature}</span><span class="deg-average">&deg;</span></p>
-            <div class="today__details-wrap">
+            <div class="today__inner flex-block">
+              <div class="today__temperature flex-block">
+                <div class="digit-big" data-temp>${today.temperature}</div>
+                <div class="deg-average">&deg;</div>
+              </div>
               <div class="today__icon-weather"></div>
+            </div>
+            <div class="today__details-wrap">
               <p class="today__details">${today.summary}</p>
               <p class="today__details"><span data-lang="todayFeels"></span><span data-temp>${today.apparentTemperature}</span><span>&nbsp;&deg;</span></p>
               <p class="today__details"><span data-lang="todayWind"></span><span>&nbsp;${today.windSpeed}&nbsp;m/s</span></p>
@@ -91,6 +112,8 @@ export default class Layout {
         </div>
         <aside class="map-wrapper">
           <div id="map"></div>
+          <p class="map-coords"><span class="txt-bold-600">Latitude:&nbsp;</span>${weatherData.latitude}</p>
+          <p class="map-coords"><span class="txt-bold-600">Longtitude:&nbsp;</span>${weatherData.longtitude}</p>
         </aside>
     `;
     this.main.innerHTML = markup;

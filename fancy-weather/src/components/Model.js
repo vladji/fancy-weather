@@ -3,21 +3,21 @@ const mapboxgl = require('mapbox-gl/dist/mapbox-gl.js');
 const langBase = {
   en: {
     bntSearch: 'search',
-    todayFeels: 'feels like:',
+    todayFeels: 'feels like:&nbsp;',
     todayWind: 'wind:',
     todayHumidity: 'humidity:',
     searchPlaceholder: 'Type place please',
   },
   ru: {
     bntSearch: 'поиск',
-    todayFeels: 'ощущается как:',
+    todayFeels: 'ощущается как:&nbsp;',
     todayWind: 'скорость ветра:',
     todayHumidity: 'влажность:',
     searchPlaceholder: 'Введите место',
   },
   be: {
     bntSearch: 'пошук',
-    todayFeels: 'адчуваецца як:',
+    todayFeels: 'адчуваецца як:&nbsp;',
     todayWind: 'хуткасць ветру:',
     todayHumidity: 'вільготнасць:',
     searchPlaceholder: 'Увядзіце месца',
@@ -166,7 +166,6 @@ export default class Model {
         day: this.day,
         month: this.month,
         time: this.time,
-        currenTime: rawData.currently.time,
         summary: rawData.currently.summary,
         icon: rawData.currently.icon,
       },
@@ -177,7 +176,6 @@ export default class Model {
       longtitude: this.longtitude,
     };
 
-    console.log('renderData', renderData);
     return renderData;
   }
 
