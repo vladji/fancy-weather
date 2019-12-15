@@ -24,6 +24,7 @@ export default class Layout {
     this.langDependElements = null;
     this.searchField = null;
     this.elementBel = null;
+    this.elementTemperature = null;
 
     this.isLangListExpand = false;
   }
@@ -77,11 +78,11 @@ export default class Layout {
               ${today.weekday}</span>&nbsp;${today.day}&nbsp;<span data-bel="${weatherData.monthEN}">${today.month}</span>
               &emsp;<span class="content__clock">${today.time}</span></p>
           <div class="today flex-block">
-            <p class="today__temperature flex-block digit-big">${today.temperature}<span class="deg-average">&deg;</span></p>
+            <p class="today__temperature flex-block digit-big"><span data-temp>${today.temperature}</span><span class="deg-average">&deg;</span></p>
             <div class="today__details-wrap">
               <div class="today__icon-weather"></div>
               <p class="today__details">${today.summary}</p>
-              <p class="today__details"><span data-lang="todayFeels"></span><span>&nbsp;${today.apparentTemperature}&deg;</span></p>
+              <p class="today__details"><span data-lang="todayFeels"></span><span data-temp>${today.apparentTemperature}</span><span>&nbsp;&deg;</span></p>
               <p class="today__details"><span data-lang="todayWind"></span><span>&nbsp;${today.windSpeed}&nbsp;m/s</span></p>
               <p class="today__details"><span data-lang="todayHumidity"></span><span>&nbsp;${today.humidity}%</span></p>
             </div>
@@ -93,7 +94,6 @@ export default class Layout {
         </aside>
     `;
     this.main.innerHTML = markup;
-    this.clock = document.querySelector('.content__clock');
 
     const dailyWeatherBlock = document.querySelector('.daily');
 
@@ -104,7 +104,7 @@ export default class Layout {
       const dailyItemMarkup = `
           <p class="daily__item-title" data-bel="${daily[i].weekDayEN}">${daily[i].weekDay}</p>
           <div class="flex-block">
-            <p class="daily__item-temperature digit-big">${daily[i].averageTemperature}&deg;</p>
+            <p class="daily__item-temperature digit-big"><span data-temp>${daily[i].averageTemperature}</span>&deg;</p>
             <div class="daily__item-icon-weather"></div>
           </div>
       `;
@@ -112,8 +112,10 @@ export default class Layout {
       dailyWeatherBlock.append(dailyItem);
     }
 
+    this.clock = document.querySelector('.content__clock');
     this.langDependElements = document.querySelectorAll('[data-lang]');
     this.elementBel = document.querySelectorAll('[data-bel]');
+    this.elementTemperature = document.querySelectorAll('[data-temp]');
   }
 
   clockRender(time) {
@@ -171,11 +173,31 @@ export default class Layout {
   }
 
   switchDeg(deg) {
-    console.log(this.clock);
     const activeElem = document.querySelector('.active-deg');
     activeElem.classList.remove('active-deg');
     const targetElem = document.querySelector(`[data-deg-val="${deg}"]`);
     targetElem.classList.add('active-deg');
+
+    const toCelsius = (val) => {
+      let convVal = val;
+      convVal = Math.round((convVal - 32) * 0.5555);
+      return convVal;
+    };
+
+    const toFahrenheit = (val) => {
+      let convVal = val;
+      convVal = Math.round(val * 1.8 + 32);
+      return convVal;
+    };
+
+    const tempElem = this.elementTemperature;
+    const convertFunc = (deg === 'fahrenheit') ? toFahrenheit : toCelsius;
+
+    for (let i = 0; i < tempElem.length; i += 1) {
+      const val = tempElem[i].innerHTML;
+      const convertVal = convertFunc(val);
+      tempElem[i].innerHTML = convertVal;
+    }
   }
 
   errorRender(message) {

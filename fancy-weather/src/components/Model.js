@@ -150,7 +150,7 @@ export default class Model {
     const temperature = Math.round(rawData.currently.temperature);
     const apparentTemperature = Math.round(rawData.currently.apparentTemperature);
     const windSpeed = Math.round(rawData.currently.windSpeed);
-    const humidity = (+rawData.currently.humidity * 100).toFixed(0);
+    const humidity = Math.round(+rawData.currently.humidity * 100);
     const daily = rawData.daily.data.slice(1, 4);
     const transformDaily = this.transformDaily(daily);
 

@@ -9,14 +9,14 @@ export default class Controller {
   }
 
   async start() {
-    // const query = this.checkQuery();
+    const query = this.checkQuery();
 
-    // if (!query) {
-    //   await this.model.getCurrentLocationIP();
-    // } else {
-    //   await this.model.getGeoData(query);
-    // }
-    // this.contentPrepare();
+    if (!query) {
+      await this.model.getCurrentLocationIP();
+    } else {
+      await this.model.getGeoData(query);
+    }
+    this.contentPrepare();
     console.log(this.searchBtn);
   }
 
