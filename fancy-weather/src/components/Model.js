@@ -21,14 +21,8 @@ const langBase = {
     todayWind: 'хуткасць ветру:',
     todayHumidity: 'вільготнасць:',
     searchPlaceholder: 'Увядзіце месца',
-    weekdayShort: {
-
-    },
-    weekdayLong: {
-
-    },
-    month: {
-
+    belDate: {
+      mon: 'пнд', tue: 'аўт', wed: 'сер', thu: 'чцв', fri: 'пят', sat: 'суб', sun: 'няд', monday: 'панядзелак', tuesday: 'аўторак', wednesday: 'серада', thursday: 'чацьвер', friday: 'пятніца', saturday: 'субота', sunday: 'нядзеля', january: 'студзень', february: 'люты', march: 'сакавік', april: 'красавік', may: 'травень', june: 'чэрвень', july: 'ліпень', august: 'жнівень', september: 'верасень', october: 'кастрычнік', november: 'лістапад', december: 'снежань',
     },
   },
 };
@@ -58,7 +52,6 @@ export default class Model {
     this.TIME_CONST = 60; // seconds in min & min in hour
     this.MS_IN_SEC = 1000;
     this.MS_IN_MIN = 60000;
-    this.belTranslateObj = null;
   }
 
   checkDeg(deg) {
@@ -104,6 +97,7 @@ export default class Model {
 
       const latitude = data.results[0].geometry.lat.toFixed(4);
       const longtitude = data.results[0].geometry.lng.toFixed(4);
+
       this.latitude = +latitude;
       this.longtitude = +longtitude;
       this.location = `${latitude},${longtitude}`;
@@ -133,14 +127,11 @@ export default class Model {
     const time = targetDate.toLocaleString(this.lang, { hour: '2-digit', minute: '2-digit' });
 
     this.weekday = weekday[0].toUpperCase() + weekday.slice(1);
+    this.weekDayEN = weekdayEN.toLowerCase();
     this.month = month[0].toUpperCase() + month.slice(1);
+    this.monthEN = monthEN.toLowerCase();
     this.day = day;
     this.time = time;
-
-    this.belTranslateObj = {
-      weekdayShort: weekdayEN,
-      month: monthEN,
-    };
   }
 
   getWeatherData() {
@@ -180,7 +171,13 @@ export default class Model {
         icon: rawData.currently.icon,
       },
       dataDaily: transformDaily,
+      weekDayENshort: this.weekDayEN,
+      monthEN: this.monthEN,
+      latitude: this.latitude,
+      longtitude: this.longtitude,
     };
+
+    console.log('renderData', renderData);
     return renderData;
   }
 
@@ -194,7 +191,7 @@ export default class Model {
       const weekDay = new Date(targetTimeStamp);
 
       const weekDayEN = weekDay.toLocaleString('en', { weekday: 'long' });
-      this.belTranslateObj[weekDayEN] = weekDayEN;
+      daily[i].weekDayEN = weekDayEN.toLowerCase();
 
       const weekDayLong = weekDay.toLocaleString(this.lang, { weekday: 'long' });
       daily[i].weekDay = weekDayLong;

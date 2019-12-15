@@ -23,6 +23,7 @@ export default class Layout {
     this.langBtn = null;
     this.langDependElements = null;
     this.searchField = null;
+    this.elementBel = null;
 
     this.isLangListExpand = false;
   }
@@ -72,7 +73,8 @@ export default class Layout {
     const markup = `
         <div class="content">
           <p class="content__head">${today.city}, ${today.country}</p>
-          <p class="content__date"><span data-bel="weekdayShort">${today.weekday}</span>&nbsp;${today.day}&nbsp;<span data-bel="month">${today.month}</span>
+          <p class="content__date"><span data-bel="${weatherData.weekDayENshort}">
+              ${today.weekday}</span>&nbsp;${today.day}&nbsp;<span data-bel="${weatherData.monthEN}">${today.month}</span>
               &emsp;<span class="content__clock">${today.time}</span></p>
           <div class="today flex-block">
             <p class="today__temperature flex-block digit-big">${today.temperature}<span class="deg-average">&deg;</span></p>
@@ -100,7 +102,7 @@ export default class Layout {
       dailyItem.classList.add('daily__item');
 
       const dailyItemMarkup = `
-          <p class="daily__item-title" data-bel="${daily[i].weekDay}">${daily[i].weekDay}</p>
+          <p class="daily__item-title" data-bel="${daily[i].weekDayEN}">${daily[i].weekDay}</p>
           <div class="flex-block">
             <p class="daily__item-temperature digit-big">${daily[i].averageTemperature}&deg;</p>
             <div class="daily__item-icon-weather"></div>
@@ -111,6 +113,7 @@ export default class Layout {
     }
 
     this.langDependElements = document.querySelectorAll('[data-lang]');
+    this.elementBel = document.querySelectorAll('[data-bel]');
   }
 
   clockRender(time) {
@@ -147,14 +150,17 @@ export default class Layout {
       elements[i].innerHTML = text;
     }
     this.searchField.placeholder = langObj.searchPlaceholder;
-    console.log('langObj', langObj);
   }
 
   setBelLang(belLang) {
-    console.log('test', this.errorWrap);
-    console.log('belLang', belLang);
-    const elementBel = document.querySelectorAll('[data-bel]');
-    console.log('elementBel', elementBel);
+    const element = this.elementBel;
+
+    for (let i = 0; i < element.length; i += 1) {
+      const prop = element[i].dataset.bel;
+      let value = belLang.belDate[prop];
+      value = value[0].toUpperCase() + value.slice(1);
+      element[i].innerHTML = value;
+    }
   }
 
   setBtnLang(buttonsLang, elem) {

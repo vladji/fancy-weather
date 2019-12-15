@@ -28,8 +28,7 @@ export default class Controller {
       const langObj = this.model.getLang();
       this.interface.setContentLang(langObj);
       if (this.model.lang === 'be') {
-        console.log(this.model.lang);
-        this.interface.setBelLang(this.model.belTranslateObj);
+        this.interface.setBelLang(langObj);
       }
 
       this.model.clockInit(this.interface);
