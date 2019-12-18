@@ -40,6 +40,8 @@ export default class Model {
     this.location = null;
     this.latitude = null;
     this.longtitude = null;
+    this.prettyLatitude = null;
+    this.prettyLongtitude = null;
     this.country = null;
     this.city = null;
     this.offsetSec = null;
@@ -48,7 +50,6 @@ export default class Model {
     this.day = null;
     this.month = null;
     this.time = null;
-    this.isUserRequest = false;
     this.TIME_CONST = 60; // seconds in min & min in hour
     this.MS_IN_SEC = 1000;
     this.MS_IN_MIN = 60000;
@@ -72,13 +73,9 @@ export default class Model {
   }
 
   async getCurrentLocationIP() {
-    let requestApi = null;
-    let location = null;
+    const requestApi = await fetch(this.ipApi);
+    const location = await requestApi.json();
 
-    if (!this.isUserRequest) {
-      requestApi = await fetch(this.ipApi);
-      location = await requestApi.json();
-    }
     const { loc } = location;
     await this.getGeoData(loc);
   }
@@ -88,7 +85,6 @@ export default class Model {
       const url = `${this.geoLocationApi}${query}&language=${this.lang}`;
       const response = await fetch(url);
       const data = await response.json();
-
       this.country = data.results[0].components.country;
       this.city = data.results[0].components.city
         || data.results[0].components.county || data.results[0].components.state;
@@ -101,6 +97,8 @@ export default class Model {
       this.latitude = +latitude;
       this.longtitude = +longtitude;
       this.location = `${latitude},${longtitude}`;
+      this.prettyLatitude = data.results[0].annotations.DMS.lat;
+      this.prettyLongtitude = data.results[0].annotations.DMS.lng;
     } catch (err) {
       this.interface.errorRender('Please try again, and make sure, that your query is correct.');
     }
@@ -152,6 +150,8 @@ export default class Model {
     const windSpeed = Math.round(rawData.currently.windSpeed);
     const humidity = Math.round(+rawData.currently.humidity * 100);
     const daily = rawData.daily.data.slice(1, 4);
+    const prettyLatitude = this.prettyLatitude.slice(0, 7) + this.prettyLatitude.slice(-2);
+    const prettyLongtitude = this.prettyLongtitude.slice(0, 7) + this.prettyLongtitude.slice(-2);
     const transformDaily = this.transformDaily(daily);
 
     const renderData = {
@@ -172,8 +172,8 @@ export default class Model {
       dataDaily: transformDaily,
       weekDayENshort: this.weekDayEN,
       monthEN: this.monthEN,
-      latitude: this.latitude,
-      longtitude: this.longtitude,
+      latitude: prettyLatitude,
+      longtitude: prettyLongtitude,
     };
 
     return renderData;

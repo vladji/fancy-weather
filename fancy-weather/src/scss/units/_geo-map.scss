@@ -1,7 +1,7 @@
 .map-wrapper {
-  width: 40%;
+  width: 35%;
 
-  @media screen and (max-width: 1001px) {
+  @media screen and (max-width: 1110px) {
     width: 100%;
     margin: 15% 0 0;
   }
@@ -12,7 +12,7 @@
   height: 70%;
   border-radius: 10px;
 
-  @media screen and (max-width: 1001px) {
+  @media screen and (max-width: 1110px) {
     height: 300px;
   }
 }

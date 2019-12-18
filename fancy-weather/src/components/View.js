@@ -1,7 +1,8 @@
 import Controller from './Controller';
 
 export default class Layout {
-  constructor() {
+  constructor(skycons) {
+    this.icons = skycons(this);
     this.bodyWrapper = document.createElement('div');
     this.bodyWrapper.classList.add('body-wrapper');
 
@@ -29,7 +30,7 @@ export default class Layout {
     this.isLangListExpand = false;
   }
 
-  renderApp(weatherData) {
+  static initApp() {
     const mapCSS = document.createElement('link');
     mapCSS.href = 'https://api.tiles.mapbox.com/mapbox-gl-js/v1.6.0/mapbox-gl.css';
     mapCSS.rel = 'stylesheet';
@@ -43,8 +44,6 @@ export default class Layout {
     metaCompatible.content = 'ie=edge';
 
     document.head.append(metaViewport, metaCompatible, mapCSS);
-
-    this.mainContentRender(weatherData);
   }
 
   controlsRender() {
@@ -99,14 +98,16 @@ export default class Layout {
                 <div class="digit-big" data-temp>${today.temperature}</div>
                 <div class="deg-average">&deg;</div>
               </div>
-              <div class="today__icon-weather"></div>
+              <div class="today__icon-wrapper">
+                <canvas class="today__icon-weather" width="128" height="128"></canvas>
+              </div>
             </div>
-            <div class="today__details-wrap">
-              <p class="today__details">${today.summary}</p>
-              <p class="today__details"><span data-lang="todayFeels"></span><span data-temp>${today.apparentTemperature}</span><span>&nbsp;&deg;</span></p>
-              <p class="today__details"><span data-lang="todayWind"></span><span>&nbsp;${today.windSpeed}&nbsp;m/s</span></p>
-              <p class="today__details"><span data-lang="todayHumidity"></span><span>&nbsp;${today.humidity}%</span></p>
-            </div>
+            <ul class="today__details-wrap">
+              <li class="today__details">${today.summary}</li>
+              <li class="today__details"><span data-lang="todayFeels"></span><span data-temp>${today.apparentTemperature}</span><span>&nbsp;&deg;</span></li>
+              <li class="today__details"><span data-lang="todayWind"></span><span>&nbsp;${today.windSpeed}&nbsp;m/s</span></li>
+              <li class="today__details"><span data-lang="todayHumidity"></span><span>&nbsp;${today.humidity}%</span></li>
+            </ul>
           </div>
           <div class="daily flex-block"></div>
         </div>
@@ -118,6 +119,9 @@ export default class Layout {
     `;
     this.main.innerHTML = markup;
 
+    const iconWeatherTodayElem = document.querySelector('.today__icon-weather');
+    this.insertWeatherIcon(iconWeatherTodayElem, today.icon);
+
     const dailyWeatherBlock = document.querySelector('.daily');
 
     for (let i = 0; i < daily.length; i += 1) {
@@ -128,17 +132,29 @@ export default class Layout {
           <p class="daily__item-title" data-bel="${daily[i].weekDayEN}">${daily[i].weekDay}</p>
           <div class="flex-block">
             <p class="daily__item-temperature digit-big"><span data-temp>${daily[i].averageTemperature}</span>&deg;</p>
-            <div class="daily__item-icon-weather"></div>
+            <div class="daily__item-icon-wrapper">
+              <canvas class="daily__icon-weather-${i} daily__icon-weather_size" width="64" height="64"></canvas>
+            </div>
           </div>
       `;
       dailyItem.innerHTML = dailyItemMarkup;
       dailyWeatherBlock.append(dailyItem);
+
+      const iconWeatherDailyElem = document.querySelector(`.daily__icon-weather-${i}`);
+      this.insertWeatherIcon(iconWeatherDailyElem, daily[i].icon);
     }
 
     this.clock = document.querySelector('.content__clock');
     this.langDependElements = document.querySelectorAll('[data-lang]');
     this.elementBel = document.querySelectorAll('[data-bel]');
     this.elementTemperature = document.querySelectorAll('[data-temp]');
+  }
+
+  insertWeatherIcon(elem, icon) {
+    const { icons, Skycons } = this.icons;
+    const iconName = icon.toUpperCase().replace(/-/g, '_');
+    icons.add(elem, Skycons[iconName]);
+    icons.play();
   }
 
   clockRender(time) {
