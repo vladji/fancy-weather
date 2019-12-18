@@ -18,15 +18,7 @@ export default class Layout {
     this.errorWrap = document.createElement('div');
     this.errorWrap.classList.add('error-wrapper');
 
-    this.clock = null;
-    this.langContainerElem = null;
-    this.langList = null;
-    this.langBtn = null;
-    this.langDependElements = null;
-    this.searchField = null;
-    this.elementBel = null;
-    this.elementTemperature = null;
-
+    this.body = document.body;
     this.isLangListExpand = false;
   }
 
@@ -73,6 +65,10 @@ export default class Layout {
     this.langList = document.querySelector('.lang-list');
     this.langBtn = document.querySelector('.btn-controls_lang');
     this.searchField = document.querySelector('.search-field');
+  }
+
+  insertBackground(imgUrl) {
+    this.body.style.backgroundImage = `url('${imgUrl}')`;
   }
 
   mainContentRender(weatherData) {

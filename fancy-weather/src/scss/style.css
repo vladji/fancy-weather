@@ -58,7 +58,8 @@ body {
   height: 100vh;
   font-family: 'Montserrat', sans-serif;
   font-size: 16px;
-  background-image: url("../assets/img/bg-1.png");
+  background-color: #8c8c8c;
+  background-blend-mode: multiply;
   background-size: cover;
   background-repeat: no-repeat;
 }
@@ -290,7 +291,7 @@ button {
   border-top-left-radius: 4px;
   border-bottom-left-radius: 4px;
   color: #fff;
-  background-color: #cccccc38;
+  background-color: #cccccc80;
   outline: none;
 }
 
@@ -308,8 +309,7 @@ button {
   width: 60%;
   margin-right: 5%;
   font-weight: 600;
-  color: #fff;
-  text-shadow: 0 0 3px #888;
+  color: #ebebeb;
 }
 
 @media screen and (max-width: 1110px) {
