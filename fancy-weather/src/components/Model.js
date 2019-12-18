@@ -147,7 +147,6 @@ export default class Model {
 
     try {
       const url = `${this.unsplashApi}&orientation=${screenOrientaion}&query=nature,${this.weatherDescription},${timeOfDay}`;
-      console.log('url', url);
       const response = await fetch(url);
       const photoData = await response.json();
       imgUrl = this.resizeImg(photoData);

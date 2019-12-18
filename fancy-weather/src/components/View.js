@@ -22,7 +22,7 @@ export default class Layout {
     this.isLangListExpand = false;
   }
 
-  static initApp() {
+  static setHead() {
     const mapCSS = document.createElement('link');
     mapCSS.href = 'https://api.tiles.mapbox.com/mapbox-gl-js/v1.6.0/mapbox-gl.css';
     mapCSS.rel = 'stylesheet';
@@ -43,7 +43,7 @@ export default class Layout {
         <div class="control-bnt-wrap">
           <button class="btn-controls btn-controls_image" data-action="switchImg"></button>
           <div class="expand-list-wrapper">
-            <button class="btn-controls btn-controls_lang" data-action="expandLangMenu">en</button>
+            <button class="btn-controls btn-controls_lang" data-lang-val="en" data-action="expandLangMenu">en</button>
             <div class="expand-list-container">
               <ul class="lang-list">
                 <li data-lang-val="be" data-action="switchLang">by</li>
@@ -203,6 +203,8 @@ export default class Layout {
   setBtnLang(buttonsLang, elem) {
     const targetBtn = elem;
     this.langBtn.innerHTML = buttonsLang.targetLang;
+    this.langBtn.dataset.langVal = buttonsLang.targetLang;
+
     targetBtn.innerHTML = buttonsLang.currentLang;
     targetBtn.dataset.langVal = buttonsLang.currentLang;
   }

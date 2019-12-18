@@ -6,10 +6,10 @@ import icon from './components/lib/skycons';
 
 
 const layout = new Layout(icon);
-Layout.initApp();
+Layout.setHead();
 layout.controlsRender();
 
 const model = new Model(layout);
 
 const control = new Controller(layout, model);
-control.start();
+control.initStorage();
