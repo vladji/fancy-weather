@@ -46,7 +46,7 @@ export default class Controller {
   async contentPrepare() {
     const weatherData = await this.model.getWeatherData();
     this.interface.mainContentRender(weatherData);
-    // this.setBackground();
+    this.setBackground();
 
     const langObj = this.model.getLang();
     this.interface.setContentLang(langObj);
