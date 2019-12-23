@@ -1,5 +1,5 @@
 .controls-block {
-  margin-bottom: 5%;
+  margin-bottom: 3%;
 }
 
 .control-bnt-wrap {
@@ -21,9 +21,18 @@
 .btn-controls_image {
   width: 50px;
   margin-right: 10px;
-  background-image: url("../assets/img/icon-change-image.png");
-  background-size: cover;
+  font-size: 50px;
+  line-height: .9;
+
+  i {
+    line-height: 0;
+  }
 }
+
+// .img-icon-wrap {
+//   width: 50px;
+//   height: 40px;
+// }
 
 .expand-list-wrapper {
   margin-right: 10px;
@@ -113,7 +122,7 @@
     border-top-left-radius: 4px;
     border-bottom-left-radius: 4px;
     color: #fff;
-    background-color: #cccccc38;
+    background-color: #cccccc80;
     outline: none;
 
     &::-webkit-input-placeholder {

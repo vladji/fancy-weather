@@ -2,25 +2,37 @@ const mapboxgl = require('mapbox-gl/dist/mapbox-gl.js');
 
 const langBase = {
   en: {
+    lang: 'en',
     bntSearch: 'search',
     todayFeels: 'feels like:&nbsp;',
     todayWind: 'wind:',
+    windSpeed: 'm/s',
     todayHumidity: 'humidity:',
     searchPlaceholder: 'Type place please',
+    latitude: 'Latitude:&nbsp;',
+    longtitude: 'Longtitude:&nbsp;',
   },
   ru: {
+    lang: 'ru',
     bntSearch: 'поиск',
     todayFeels: 'ощущается как:&nbsp;',
     todayWind: 'скорость ветра:',
+    windSpeed: 'м/сек',
     todayHumidity: 'влажность:',
     searchPlaceholder: 'Введите место',
+    latitude: 'Широта:&nbsp;',
+    longtitude: 'Долгота:&nbsp;',
   },
   be: {
+    lang: 'be',
     bntSearch: 'пошук',
     todayFeels: 'адчуваецца як:&nbsp;',
     todayWind: 'хуткасць ветру:',
+    windSpeed: 'м/сек',
     todayHumidity: 'вільготнасць:',
     searchPlaceholder: 'Увядзіце месца',
+    latitude: 'Шырата:&nbsp;',
+    longtitude: 'Даўгата:&nbsp;',
     belDate: {
       mon: 'пнд', tue: 'аўт', wed: 'сер', thu: 'чцв', fri: 'пят', sat: 'суб', sun: 'няд', monday: 'панядзелак', tuesday: 'аўторак', wednesday: 'серада', thursday: 'чацьвер', friday: 'пятніца', saturday: 'субота', sunday: 'нядзеля', january: 'студзень', february: 'люты', march: 'сакавік', april: 'красавік', may: 'травень', june: 'чэрвень', july: 'ліпень', august: 'жнівень', september: 'верасень', october: 'кастрычнік', november: 'лістапад', december: 'снежань',
     },
@@ -33,22 +45,12 @@ export default class Model {
     this.ipApi = 'https://ipinfo.io/json?token=8d3889f93dad62';
     this.weatherApi = 'https://api.darksky.net/forecast/987251c0ee515463cce9f694cf4913ad/';
     this.geoLocationApi = 'https://api.opencagedata.com/geocode/v1/json?key=5664a8feeeba4d4e8b5539b7302c030b&limit=1&q=';
+    this.flickrApi = 'https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=6d8839cf3d1f3f327ed534addae2a1af&format=json&nojsoncallback=1&per_page=25&tag_mode=all&sort=relevance&geo_context=2&content_type=1&media=photos&tags=';
+    this.unsplashApi = 'https://api.unsplash.com/photos/random?per_page=1&client_id=76e02e7b52a90f9aeedee595901a91ad8a6e98072539f05ba2420e24b6a4fa75';
     this.weatherApiUnits = 'si';
     this.wetherApiExclude = 'minutely,hourly,alerts';
     this.lang = 'en';
     this.tempDeg = 'celsius';
-    this.location = null;
-    this.latitude = null;
-    this.longtitude = null;
-    this.country = null;
-    this.city = null;
-    this.offsetSec = null;
-    this.dateUNIX = null;
-    this.weekday = null;
-    this.day = null;
-    this.month = null;
-    this.time = null;
-    this.isUserRequest = false;
     this.TIME_CONST = 60; // seconds in min & min in hour
     this.MS_IN_SEC = 1000;
     this.MS_IN_MIN = 60000;
@@ -72,15 +74,14 @@ export default class Model {
   }
 
   async getCurrentLocationIP() {
-    let requestApi = null;
-    let location = null;
-
-    if (!this.isUserRequest) {
-      requestApi = await fetch(this.ipApi);
-      location = await requestApi.json();
+    try {
+      const requestApi = await fetch(this.ipApi);
+      const location = await requestApi.json();
+      const { loc } = location;
+      await this.getGeoData(loc);
+    } catch (err) {
+      this.interface.errorRender('Ooopss... Something went wrong. Perhaps it has to do with the definition IP');
     }
-    const { loc } = location;
-    await this.getGeoData(loc);
   }
 
   async getGeoData(query) {
@@ -101,8 +102,10 @@ export default class Model {
       this.latitude = +latitude;
       this.longtitude = +longtitude;
       this.location = `${latitude},${longtitude}`;
+      this.prettyLatitude = data.results[0].annotations.DMS.lat;
+      this.prettyLongtitude = data.results[0].annotations.DMS.lng;
     } catch (err) {
-      this.interface.errorRender('Please try again, and make sure, that your query is correct.');
+      this.interface.errorRender('Please try again, and make sure, that your query is correct');
     }
   }
 
@@ -113,37 +116,94 @@ export default class Model {
     const dateUnixUTC = (deviceTimeStamp / this.MS_IN_SEC) + timeZoneOffsetInSec;
     const targetDateUNIX = dateUnixUTC + this.offsetSec;
     this.dateUNIX = targetDateUNIX;
-
     const targetDate = new Date(targetDateUNIX * this.MS_IN_SEC);
 
     const weekday = targetDate.toLocaleString(this.lang, { weekday: 'short' });
     const weekdayEN = targetDate.toLocaleString('en', { weekday: 'short' });
-
-    const day = targetDate.toLocaleString(this.lang, { day: '2-digit' });
-
     const month = targetDate.toLocaleString(this.lang, { month: 'long' });
     const monthEN = targetDate.toLocaleString('en', { month: 'long' });
-
-    const time = targetDate.toLocaleString(this.lang, { hour: '2-digit', minute: '2-digit' });
+    this.monthNumeric = targetDate.toLocaleString('en', { month: 'numeric' });
 
     this.weekday = weekday[0].toUpperCase() + weekday.slice(1);
     this.weekDayEN = weekdayEN.toLowerCase();
     this.month = month[0].toUpperCase() + month.slice(1);
     this.monthEN = monthEN.toLowerCase();
-    this.day = day;
-    this.time = time;
+
+    this.day = targetDate.toLocaleString(this.lang, { day: '2-digit' });
+    this.time = targetDate.toLocaleString(this.lang, { hour: '2-digit', minute: '2-digit' });
+    this.timeOfDay = targetDate.toLocaleString('ru', { hour: '2-digit' });
   }
 
   getWeatherData() {
     this.getDate();
-
-    const PROXY_URL = 'https://cors-anywhere.herokuapp.com/';
-    const weatherData = fetch(`
-      ${PROXY_URL}${this.weatherApi}${this.location}?exclude=${this.wetherApiExclude}&units=${this.weatherApiUnits}&lang=${this.lang}&time=${this.dateUNIX}
-      `)
-      .then((response) => response.json())
-      .then((rawData) => this.contentComposition(rawData));
+    let weatherData = null;
+    try {
+      const PROXY_URL = 'https://cors-anywhere.herokuapp.com/';
+      weatherData = fetch(`
+        ${PROXY_URL}${this.weatherApi}${this.location}?exclude=${this.wetherApiExclude}&units=${this.weatherApiUnits}&lang=${this.lang}&time=${this.dateUNIX}
+        `)
+        .then((response) => response.json())
+        .then((rawData) => {
+          this.weatherDescription = rawData.currently.icon;
+          return this.contentComposition(rawData);
+        });
+    } catch (err) {
+      this.interface.errorRender('Ooopss... Something went wrong. Perhaps it has to do with weather server');
+    }
     return weatherData;
+  }
+
+  async getPhotoData() {
+    let imgUrl = null;
+    const screenOrientaion = this.getScreenSize();
+    const timeOfDay = this.getTimeOfDay();
+    const season = this.getSeason();
+
+    try {
+      const url = `${this.unsplashApi}&orientation=${screenOrientaion}&query=nature,${this.weatherDescription},${timeOfDay},${season}`;
+      console.log('url', url);
+      const response = await fetch(url);
+      const photoData = await response.json();
+      imgUrl = this.resizeImg(photoData);
+    } catch (err) {
+      this.interface.errorRender('Ooopss... Something went wrong. Perhaps it has to do with photo-server');
+    }
+    return imgUrl;
+  }
+
+  getTimeOfDay() {
+    let time = +this.timeOfDay;
+    if (time >= 21 || time <= 5) time = 'night';
+    if (time > 5 && time <= 9) time = 'morning';
+    if (time > 9 && time <= 18) time = 'day';
+    if (time > 18 && time <= 21) time = 'evening';
+    return time;
+  }
+
+  getSeason() {
+    const month = +this.monthNumeric;
+    let season = null;
+    if (month === 12 || month <= 2) season = 'winter';
+    if (month > 2 && month <= 5) season = 'spring';
+    if (month > 5 && month <= 8) season = 'summer';
+    if (month > 8 && month <= 11) season = 'fall';
+    return season;
+  }
+
+  getScreenSize() {
+    this.screenWidth = document.documentElement.clientWidth;
+    this.screenHeight = Math.max(
+      document.body.scrollHeight, document.documentElement.scrollHeight,
+      document.body.offsetHeight, document.documentElement.offsetHeight,
+      document.body.clientHeight, document.documentElement.clientHeight,
+    );
+    const orientation = (this.screenWidth >= this.screenHeight) ? 'landscape' : 'portrait';
+    return orientation;
+  }
+
+  resizeImg(data) {
+    const imgUrl = `${data.urls.raw}&fit=clip&w=${this.screenWidth}&h=${this.screenHeight}&auto=format,compress`;
+    return imgUrl;
   }
 
   contentComposition(rawData) {
@@ -152,6 +212,8 @@ export default class Model {
     const windSpeed = Math.round(rawData.currently.windSpeed);
     const humidity = Math.round(+rawData.currently.humidity * 100);
     const daily = rawData.daily.data.slice(1, 4);
+    const prettyLatitude = this.prettyLatitude.slice(0, 7) + this.prettyLatitude.slice(-2);
+    const prettyLongtitude = this.prettyLongtitude.slice(0, 7) + this.prettyLongtitude.slice(-2);
     const transformDaily = this.transformDaily(daily);
 
     const renderData = {
@@ -172,8 +234,8 @@ export default class Model {
       dataDaily: transformDaily,
       weekDayENshort: this.weekDayEN,
       monthEN: this.monthEN,
-      latitude: this.latitude,
-      longtitude: this.longtitude,
+      latitude: prettyLatitude,
+      longtitude: prettyLongtitude,
     };
 
     return renderData;

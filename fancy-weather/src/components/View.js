@@ -1,7 +1,9 @@
 import Controller from './Controller';
 
 export default class Layout {
-  constructor() {
+  constructor(skycons) {
+    this.icons = skycons(this);
+    document.documentElement.lang = 'en';
     this.bodyWrapper = document.createElement('div');
     this.bodyWrapper.classList.add('body-wrapper');
 
@@ -17,23 +19,11 @@ export default class Layout {
     this.errorWrap = document.createElement('div');
     this.errorWrap.classList.add('error-wrapper');
 
-    this.clock = null;
-    this.langContainerElem = null;
-    this.langList = null;
-    this.langBtn = null;
-    this.langDependElements = null;
-    this.searchField = null;
-    this.elementBel = null;
-    this.elementTemperature = null;
-
+    this.body = document.body;
     this.isLangListExpand = false;
   }
 
-  renderApp(weatherData) {
-    const mapCSS = document.createElement('link');
-    mapCSS.href = 'https://api.tiles.mapbox.com/mapbox-gl-js/v1.6.0/mapbox-gl.css';
-    mapCSS.rel = 'stylesheet';
-
+  static setHead() {
     const metaViewport = document.createElement('meta');
     metaViewport.name = 'viewport';
     metaViewport.content = 'width=device-width, initial-scale=1.0';
@@ -42,17 +32,26 @@ export default class Layout {
     metaCompatible.httpEquiv = 'X-UA-Compatible';
     metaCompatible.content = 'ie=edge';
 
-    document.head.append(metaViewport, metaCompatible, mapCSS);
+    const mapCSS = document.createElement('link');
+    mapCSS.href = 'https://api.tiles.mapbox.com/mapbox-gl-js/v1.6.0/mapbox-gl.css';
+    mapCSS.rel = 'stylesheet';
 
-    this.mainContentRender(weatherData);
+    const fontAwe = document.createElement('link');
+    fontAwe.rel = 'stylesheet';
+    fontAwe.href = 'https://kit-free.fontawesome.com/releases/latest/css/free.min.css';
+    fontAwe.media = 'all';
+
+    document.head.append(metaViewport, metaCompatible, mapCSS, fontAwe);
   }
 
   controlsRender() {
     const markup = `
         <div class="control-bnt-wrap">
-          <button class="btn-controls btn-controls_image" data-action="switchImg"></button>
+          <button class="btn-controls btn-controls_image" data-action="switchImg">
+            <i class="fas fa-image"></i><i class="fas fa-sliders-h"></i>
+          </button>
           <div class="expand-list-wrapper">
-            <button class="btn-controls btn-controls_lang" data-action="expandLangMenu">en</button>
+            <button class="btn-controls btn-controls_lang" data-lang-val="en" data-action="expandLangMenu">en</button>
             <div class="expand-list-container">
               <ul class="lang-list">
                 <li data-lang-val="be" data-action="switchLang">by</li>
@@ -76,6 +75,10 @@ export default class Layout {
     this.searchField = document.querySelector('.search-field');
   }
 
+  insertBackground(imgUrl) {
+    this.body.style.backgroundImage = `url('${imgUrl}')`;
+  }
+
   mainContentRender(weatherData) {
     const today = weatherData.dataToday;
     const daily = weatherData.dataDaily;
@@ -93,30 +96,35 @@ export default class Layout {
               <span class="content__clock">${today.time}</span>
             </p>
           </div>
-          <div class="today flex-block">
+          <div class="today">
             <div class="today__inner flex-block">
               <div class="today__temperature flex-block">
                 <div class="digit-big" data-temp>${today.temperature}</div>
                 <div class="deg-average">&deg;</div>
               </div>
-              <div class="today__icon-weather"></div>
+              <div class="today__icon-wrapper">
+                <canvas class="today__icon-weather" width="128" height="128"></canvas>
+              </div>
             </div>
-            <div class="today__details-wrap">
-              <p class="today__details">${today.summary}</p>
-              <p class="today__details"><span data-lang="todayFeels"></span><span data-temp>${today.apparentTemperature}</span><span>&nbsp;&deg;</span></p>
-              <p class="today__details"><span data-lang="todayWind"></span><span>&nbsp;${today.windSpeed}&nbsp;m/s</span></p>
-              <p class="today__details"><span data-lang="todayHumidity"></span><span>&nbsp;${today.humidity}%</span></p>
-            </div>
+            <ul class="today__details-wrap">
+              <li class="today__details">${today.summary}</li>
+              <li class="today__details"><span data-lang="todayFeels"></span><span data-temp>${today.apparentTemperature}</span><span>&nbsp;&deg;</span></li>
+              <li class="today__details"><span data-lang="todayWind"></span>&nbsp;<span>${today.windSpeed}</span>&nbsp;<span data-lang="windSpeed"></span></li>
+              <li class="today__details"><span data-lang="todayHumidity"></span><span>&nbsp;${today.humidity}%</span></li>
+            </ul>
           </div>
           <div class="daily flex-block"></div>
         </div>
         <aside class="map-wrapper">
           <div id="map"></div>
-          <p class="map-coords"><span class="txt-bold-600">Latitude:&nbsp;</span>${weatherData.latitude}</p>
-          <p class="map-coords"><span class="txt-bold-600">Longtitude:&nbsp;</span>${weatherData.longtitude}</p>
+          <p class="map-coords"><span class="txt-bold-600" data-lang="latitude"></span>${weatherData.latitude}</p>
+          <p class="map-coords"><span class="txt-bold-600" data-lang="longtitude"></span>${weatherData.longtitude}</p>
         </aside>
     `;
     this.main.innerHTML = markup;
+
+    const iconWeatherTodayElem = document.querySelector('.today__icon-weather');
+    this.insertWeatherIcon(iconWeatherTodayElem, today.icon);
 
     const dailyWeatherBlock = document.querySelector('.daily');
 
@@ -128,17 +136,29 @@ export default class Layout {
           <p class="daily__item-title" data-bel="${daily[i].weekDayEN}">${daily[i].weekDay}</p>
           <div class="flex-block">
             <p class="daily__item-temperature digit-big"><span data-temp>${daily[i].averageTemperature}</span>&deg;</p>
-            <div class="daily__item-icon-weather"></div>
+            <div class="daily__item-icon-wrapper">
+              <canvas class="daily__icon-weather-${i} daily__icon-weather_size" width="64" height="64"></canvas>
+            </div>
           </div>
       `;
       dailyItem.innerHTML = dailyItemMarkup;
       dailyWeatherBlock.append(dailyItem);
+
+      const iconWeatherDailyElem = document.querySelector(`.daily__icon-weather-${i}`);
+      this.insertWeatherIcon(iconWeatherDailyElem, daily[i].icon);
     }
 
     this.clock = document.querySelector('.content__clock');
     this.langDependElements = document.querySelectorAll('[data-lang]');
     this.elementBel = document.querySelectorAll('[data-bel]');
     this.elementTemperature = document.querySelectorAll('[data-temp]');
+  }
+
+  insertWeatherIcon(elem, icon) {
+    const { icons, Skycons } = this.icons;
+    const iconName = icon.toUpperCase().replace(/-/g, '_');
+    icons.add(elem, Skycons[iconName]);
+    icons.play();
   }
 
   clockRender(time) {
@@ -190,8 +210,20 @@ export default class Layout {
 
   setBtnLang(buttonsLang, elem) {
     const targetBtn = elem;
-    this.langBtn.innerHTML = buttonsLang.targetLang;
-    targetBtn.innerHTML = buttonsLang.currentLang;
+    document.documentElement.lang = buttonsLang.targetLang;
+
+    if (buttonsLang.targetLang === 'be') {
+      this.langBtn.innerHTML = 'by';
+    } else {
+      this.langBtn.innerHTML = buttonsLang.targetLang;
+    }
+    this.langBtn.dataset.langVal = buttonsLang.targetLang;
+
+    if (buttonsLang.currentLang === 'be') {
+      targetBtn.innerHTML = 'by';
+    } else {
+      targetBtn.innerHTML = buttonsLang.currentLang;
+    }
     targetBtn.dataset.langVal = buttonsLang.currentLang;
   }
 

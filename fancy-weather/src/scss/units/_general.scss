@@ -4,7 +4,8 @@ body {
   height: 100vh;
   font-family: 'Montserrat', sans-serif;
   font-size: 16px;
-  background-image: url("../assets/img/bg-1.png");
+  background-color: #8c8c8c;
+  background-blend-mode: multiply;
   background-size: cover;
   background-repeat: no-repeat;
 
@@ -25,7 +26,7 @@ body {
     font-size: 13px;
   }
 
-  @media (max-width: 340px) {
+  @media (max-width: 360px) {
     font-size: 12px;
   }
 }
