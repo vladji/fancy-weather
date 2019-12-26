@@ -182,13 +182,13 @@ button {
 
 .btn-controls_image {
   width: 50px;
-  margin-right: 10px;
-  font-size: 50px;
-  line-height: .9;
+  margin-right: 13px;
 }
 
 .btn-controls_image i {
-  line-height: 0;
+  font-size: 53px;
+  -webkit-transform: translateY(-6px);
+          transform: translateY(-6px);
 }
 
 .expand-list-wrapper {
@@ -301,6 +301,15 @@ button {
 
 .control-search-wrap input::-webkit-input-placeholder {
   color: #fff;
+}
+
+.speech-btn {
+  color: #fff;
+  background-color: #cccccc80;
+}
+
+.speech-btn i {
+  padding: 12px 20px;
 }
 
 .btn-search {

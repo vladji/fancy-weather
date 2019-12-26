@@ -47,8 +47,8 @@ export default class Layout {
   controlsRender() {
     const markup = `
         <div class="control-bnt-wrap">
-          <button class="btn-controls btn-controls_image" data-action="switchImg">
-            <i class="fas fa-image"></i><i class="fas fa-sliders-h"></i>
+          <button class="btn-controls btn-controls_image">
+            <i class="fas fa-image" data-action="switchImg"></i>
           </button>
           <div class="expand-list-wrapper">
             <button class="btn-controls btn-controls_lang" data-lang-val="en" data-action="expandLangMenu">en</button>
@@ -64,6 +64,7 @@ export default class Layout {
         </div>
         <div class="control-search-wrap"> 
           <input class="search-field" type="text" placeholder="">
+          <div class="speech-btn"><i class="fas fa-microphone" data-action="userSpeech"></i></div>
           <button class="btn-controls btn-search" data-lang="bntSearch" data-action="userSearch">search</button>
         </div>
     `;
@@ -152,6 +153,10 @@ export default class Layout {
     this.langDependElements = document.querySelectorAll('[data-lang]');
     this.elementBel = document.querySelectorAll('[data-bel]');
     this.elementTemperature = document.querySelectorAll('[data-temp]');
+  }
+
+  insertSpeechRequest(request) {
+    this.searchField.value = request;
   }
 
   insertWeatherIcon(elem, icon) {

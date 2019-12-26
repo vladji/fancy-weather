@@ -1,7 +1,8 @@
 export default class Controller {
-  constructor(layout, model) {
+  constructor(layout, model, speech) {
     this.interface = layout;
     this.model = model;
+    this.speechRequest = speech;
     this.controlPanel = document.querySelector('.controls-block');
     this.searchField = document.querySelector('.search-field');
     this.searchBtn = document.querySelector('.btn-search');
@@ -53,6 +54,7 @@ export default class Controller {
 
     if (this.model.lang === 'be') this.interface.setBelLang(langObj);
     if (this.model.tempDeg === 'fahrenheit') this.interface.switchDeg('fahrenheit');
+    this.speechRequest.recognition.lang = this.model.lang;
 
     this.model.clockInit(this.interface);
     this.model.initMap();
@@ -98,6 +100,7 @@ export default class Controller {
     const control = this;
     const view = this.interface;
     const mode = this.model;
+    const speech = this.speechRequest;
 
     const handlers = {
       expandLangMenu() {
@@ -118,6 +121,10 @@ export default class Controller {
       switchDeg() {
         const deg = elem.dataset.degVal;
         mode.checkDeg(deg);
+      },
+      async userSpeech() {
+        await speech.speechStart();
+        control.start();
       },
     };
 

@@ -1,21 +1,27 @@
 export default class Speech {
-  start() {
-    console.log(this);
-    const recognition = new (window.SpeechRecognition
+  constructor(layout) {
+    this.interface = layout;
+    this.recognition = new (window.SpeechRecognition
       || window.webkitSpeechRecognition || window.mozSpeechRecognition
       || window.msSpeechRecognition)();
+    this.recognition.interimResults = true;
+    this.recognition.lang = 'en';
 
-    console.log(recognition);
-    recognition.interimResults = true;
-    recognition.lang = 'en';
-    // recognition.continuous = true;
-    const div = document.createElement('div');
-    document.body.append(div);
+    this.recognition.addEventListener('result', (e) => {
+      this.transcript = Array.from(e.results)
+        .map((item) => item[0].transcript);
+    });
+  }
 
-    // recognition.start();
-
-    recognition.addEventListener('results', (e) => {
-      console.log(e.results);
+  speechStart() {
+    console.log('t1', this.transcript);
+    return new Promise((resolve) => {
+      console.log('t2', this.transcript);
+      this.recognition.start();
+      this.recognition.addEventListener('end', () => {
+        this.interface.insertSpeechRequest(this.transcript);
+        resolve();
+      }, { once: true });
     });
   }
 }

@@ -20,19 +20,13 @@
 
 .btn-controls_image {
   width: 50px;
-  margin-right: 10px;
-  font-size: 50px;
-  line-height: .9;
+  margin-right: 13px;
 
   i {
-    line-height: 0;
+    font-size: 53px;
+    transform: translateY(-6px);
   }
 }
-
-// .img-icon-wrap {
-//   width: 50px;
-//   height: 40px;
-// }
 
 .expand-list-wrapper {
   margin-right: 10px;
@@ -128,6 +122,15 @@
     &::-webkit-input-placeholder {
       color: #fff;
     }
+  }
+}
+
+.speech-btn {
+  color: #fff;
+  background-color: #cccccc80;
+
+  i {
+    padding: 12px 20px;
   }
 }
 

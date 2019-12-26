@@ -8,7 +8,7 @@ const langBase = {
     todayWind: 'wind:',
     windSpeed: 'm/s',
     todayHumidity: 'humidity:',
-    searchPlaceholder: 'Type place please',
+    searchPlaceholder: 'Type the place, please',
     latitude: 'Latitude:&nbsp;',
     longtitude: 'Longtitude:&nbsp;',
   },
@@ -19,7 +19,7 @@ const langBase = {
     todayWind: 'скорость ветра:',
     windSpeed: 'м/сек',
     todayHumidity: 'влажность:',
-    searchPlaceholder: 'Введите место',
+    searchPlaceholder: 'Укажите место',
     latitude: 'Широта:&nbsp;',
     longtitude: 'Долгота:&nbsp;',
   },
@@ -161,7 +161,6 @@ export default class Model {
 
     try {
       const url = `${this.unsplashApi}&orientation=${screenOrientaion}&query=nature,${this.weatherDescription},${timeOfDay},${season}`;
-      console.log('url', url);
       const response = await fetch(url);
       const photoData = await response.json();
       imgUrl = this.resizeImg(photoData);
