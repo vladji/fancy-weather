@@ -126,6 +126,7 @@
 }
 
 .speech-btn {
+  font-size: 1.2rem;
   color: #fff;
   background-color: #cccccc80;
 
@@ -138,4 +139,44 @@
   width: 80px;
   border-top-left-radius: 0;
   border-bottom-left-radius: 0;
+}
+
+.mic-animation {
+  position: relative;
+
+  &:before,
+  &:after {
+    content: "";
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    display: block;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    border: 1px solid #fff;
+    transform: translate(-45%, -48%);
+  }
+
+  &:before {
+    animation: waveBefore 1s ease-in-out infinite;
+  }
+
+  &:after {
+    animation: waveAfter 1s ease-in-out infinite;
+  }
+
+  @keyframes waveBefore {
+    to {
+      transform: scale(2) translate(-30%, -30%);
+      opacity: 0;
+    }
+  }
+
+  @keyframes waveAfter {
+    to {
+      transform: scale(3) translate(-20%, -20%);
+      opacity: 0;
+    }
+  }
 }

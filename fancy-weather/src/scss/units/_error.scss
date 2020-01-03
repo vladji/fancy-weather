@@ -1,13 +1,40 @@
 .error-wrapper {
   position: absolute;
-  top: 15%;
+  top: 20%;
   left: 50%;
   transform: translateX(-50%);
-  width: 50%;
-  padding: 5%;
-  font-size: 2rem;
-  font-weight: 500;
-  color: #fff;
-  background-color: #888585f2;
+  z-index: 11;
+
+  @media (max-width: 690px) {
+    width: 90%;
+  }
+}
+
+.error-block {
+  box-sizing: border-box;
+  width: 100%;
+  padding: 20px;
+  margin: 20px auto;
+  font-size: 1.2em;
   border-radius: 5px;
+  color: #000;
+  background-color: #ffef91f2;;
+
+  label {
+    display: block;
+    margin-top: 20px;
+    font-size: .9rem;
+
+    input {
+      margin: 0 10px 0 0;
+      transform: translateY(1px);
+    }
+  }
+
+  .btn-close-modal {
+    float: right;
+    margin: 0 0 20px 20px;
+    font-size: 2.5rem;
+    line-height: .5;
+  }
 }

@@ -14,13 +14,17 @@ export default class Speech {
   }
 
   speechStart() {
-    console.log('t1', this.transcript);
+    this.transcript = null;
     return new Promise((resolve) => {
-      console.log('t2', this.transcript);
+      this.interface.aniamtionMicrophone();
       this.recognition.start();
+
       this.recognition.addEventListener('end', () => {
-        this.interface.insertSpeechRequest(this.transcript);
-        resolve();
+        if (this.transcript) {
+          this.interface.insertSpeechRequest(this.transcript);
+        }
+        this.interface.aniamtionMicrophone();
+        resolve(this.transcript);
       }, { once: true });
     });
   }

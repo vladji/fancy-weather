@@ -75,12 +75,7 @@
 
 .daily__item-title {
   margin-bottom: 10px;
-  font-size: 1.5em;
   text-transform: uppercase;
-
-  @media (max-width: 690px) {
-    font-size: 1.2em;
-  }
 }
 
 .daily__item-temperature {

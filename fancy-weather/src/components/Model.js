@@ -1,44 +1,5 @@
 const mapboxgl = require('mapbox-gl/dist/mapbox-gl.js');
 
-const langBase = {
-  en: {
-    lang: 'en',
-    bntSearch: 'search',
-    todayFeels: 'feels like:&nbsp;',
-    todayWind: 'wind:',
-    windSpeed: 'm/s',
-    todayHumidity: 'humidity:',
-    searchPlaceholder: 'Type the place, please',
-    latitude: 'Latitude:&nbsp;',
-    longtitude: 'Longtitude:&nbsp;',
-  },
-  ru: {
-    lang: 'ru',
-    bntSearch: 'поиск',
-    todayFeels: 'ощущается как:&nbsp;',
-    todayWind: 'скорость ветра:',
-    windSpeed: 'м/сек',
-    todayHumidity: 'влажность:',
-    searchPlaceholder: 'Укажите место',
-    latitude: 'Широта:&nbsp;',
-    longtitude: 'Долгота:&nbsp;',
-  },
-  be: {
-    lang: 'be',
-    bntSearch: 'пошук',
-    todayFeels: 'адчуваецца як:&nbsp;',
-    todayWind: 'хуткасць ветру:',
-    windSpeed: 'м/сек',
-    todayHumidity: 'вільготнасць:',
-    searchPlaceholder: 'Увядзіце месца',
-    latitude: 'Шырата:&nbsp;',
-    longtitude: 'Даўгата:&nbsp;',
-    belDate: {
-      mon: 'пнд', tue: 'аўт', wed: 'сер', thu: 'чцв', fri: 'пят', sat: 'суб', sun: 'няд', monday: 'панядзелак', tuesday: 'аўторак', wednesday: 'серада', thursday: 'чацьвер', friday: 'пятніца', saturday: 'субота', sunday: 'нядзеля', january: 'студзень', february: 'люты', march: 'сакавік', april: 'красавік', may: 'травень', june: 'чэрвень', july: 'ліпень', august: 'жнівень', september: 'верасень', october: 'кастрычнік', november: 'лістапад', december: 'снежань',
-    },
-  },
-};
-
 export default class Model {
   constructor(layout) {
     this.interface = layout;
@@ -51,6 +12,7 @@ export default class Model {
     this.wetherApiExclude = 'minutely,hourly,alerts';
     this.lang = 'en';
     this.tempDeg = 'celsius';
+    this.preventErrorShow = false;
     this.TIME_CONST = 60; // seconds in min & min in hour
     this.MS_IN_SEC = 1000;
     this.MS_IN_MIN = 60000;
@@ -59,11 +21,6 @@ export default class Model {
   checkDeg(deg) {
     if (deg !== this.tempDeg) this.interface.switchDeg(deg);
     this.tempDeg = deg;
-  }
-
-  getLang() {
-    const langObj = langBase[this.lang];
-    return langObj;
   }
 
   switchLang(targetBtn) {
@@ -80,7 +37,7 @@ export default class Model {
       const { loc } = location;
       await this.getGeoData(loc);
     } catch (err) {
-      this.interface.errorRender('Ooopss... Something went wrong. Perhaps it has to do with the definition IP');
+      this.interface.errorRender('apiIP', this.lang);
     }
   }
 
@@ -105,7 +62,7 @@ export default class Model {
       this.prettyLatitude = data.results[0].annotations.DMS.lat;
       this.prettyLongtitude = data.results[0].annotations.DMS.lng;
     } catch (err) {
-      this.interface.errorRender('Please try again, and make sure, that your query is correct');
+      this.interface.errorRender('apiGEO', this.lang);
     }
   }
 
@@ -148,7 +105,7 @@ export default class Model {
           return this.contentComposition(rawData);
         });
     } catch (err) {
-      this.interface.errorRender('Ooopss... Something went wrong. Perhaps it has to do with weather server');
+      this.interface.errorRender('weatherAPI', this.lang);
     }
     return weatherData;
   }
@@ -165,8 +122,14 @@ export default class Model {
       const photoData = await response.json();
       imgUrl = this.resizeImg(photoData);
     } catch (err) {
-      this.interface.errorRender('Ooopss... Something went wrong. Perhaps it has to do with photo-server');
+      if (!this.preventErrorShow) this.interface.errorRender('imageAPI', this.lang);
+      imgUrl = 'http://www.animalslook.com/media/very-cute-and-funny-dog-selfies/very-cute-and-funny-dog-selfies-5.jpg';
     }
+    return imgUrl;
+  }
+
+  resizeImg(data) {
+    const imgUrl = `${data.urls.raw}&fit=clip&w=${this.screenWidth}&h=${this.screenHeight}&auto=format,compress`;
     return imgUrl;
   }
 
@@ -198,11 +161,6 @@ export default class Model {
     );
     const orientation = (this.screenWidth >= this.screenHeight) ? 'landscape' : 'portrait';
     return orientation;
-  }
-
-  resizeImg(data) {
-    const imgUrl = `${data.urls.raw}&fit=clip&w=${this.screenWidth}&h=${this.screenHeight}&auto=format,compress`;
-    return imgUrl;
   }
 
   contentComposition(rawData) {

@@ -1,4 +1,62 @@
-import Controller from './Controller';
+const langBase = {
+  en: {
+    lang: 'en',
+    bntSearch: 'search',
+    todayFeels: 'feels like:&nbsp;',
+    todayWind: 'wind:',
+    windSpeed: 'm/s',
+    todayHumidity: 'humidity:',
+    searchPlaceholder: 'Type the place, please',
+    latitude: 'Latitude:&nbsp;',
+    longtitude: 'Longtitude:&nbsp;',
+    errors: {
+      apiIP: 'Ooopss... Something went wrong. Perhaps it has to do with the definition IP',
+      apiGEO: 'Please try again, and make sure, that your query is correct',
+      weatherAPI: 'Ooopss... Something went wrong. Perhaps it has to do with weather server',
+      imageAPI: `<p>Ooopss... Photo-server limit is over</p>
+                <label class="prevent-show"><input type="checkbox">Don't show this message again</label>`,
+    },
+  },
+  ru: {
+    lang: 'ru',
+    bntSearch: 'поиск',
+    todayFeels: 'ощущается как:&nbsp;',
+    todayWind: 'скорость ветра:',
+    windSpeed: 'м/сек',
+    todayHumidity: 'влажность:',
+    searchPlaceholder: 'Укажите место',
+    latitude: 'Широта:&nbsp;',
+    longtitude: 'Долгота:&nbsp;',
+    errors: {
+      apiIP: 'Ошибка, связанная с сервисом определения местоположения',
+      apiGEO: 'Пожалуйста, убедитесь в правильности ввода местоположения и попытайтесь снова',
+      weatherAPI: 'Что-то пошло не так. Возникла ошибка, связанная с сервером передачи данных о погоде',
+      imageAPI: `<p>Упс...) Закончился лимит картинок на сервере</p>
+                <label class="prevent-show"><input type="checkbox">Больше не показывать это сообщение</label>`,
+    },
+  },
+  be: {
+    lang: 'be',
+    bntSearch: 'пошук',
+    todayFeels: 'адчуваецца як:&nbsp;',
+    todayWind: 'хуткасць ветру:',
+    windSpeed: 'м/сек',
+    todayHumidity: 'вільготнасць:',
+    searchPlaceholder: 'Увядзіце месца',
+    latitude: 'Шырата:&nbsp;',
+    longtitude: 'Даўгата:&nbsp;',
+    belDate: {
+      mon: 'пнд', tue: 'аўт', wed: 'сер', thu: 'чцв', fri: 'пят', sat: 'суб', sun: 'няд', monday: 'панядзелак', tuesday: 'аўторак', wednesday: 'серада', thursday: 'чацьвер', friday: 'пятніца', saturday: 'субота', sunday: 'нядзеля', january: 'студзень', february: 'люты', march: 'сакавік', april: 'красавік', may: 'травень', june: 'чэрвень', july: 'ліпень', august: 'жнівень', september: 'верасень', october: 'кастрычнік', november: 'лістапад', december: 'снежань',
+    },
+    errors: {
+      apiIP: 'Памылка, звязаная з сэрвісам вызначэння месцазнаходжання',
+      apiGEO: 'Калі ласка, пераканайцеся ў правільнасці ўводу месцазнаходжання і паспрабуйце зноў',
+      weatherAPI: 'Нешта пайшло не так. Паўстала памылка, звязаная з серверам перадачы дадзеных пра надвор\'е',
+      imageAPI: `<p>Скончыўся ліміт малюнкаў на сэрвэры</p>
+                <label class="prevent-show"><input type="checkbox">Не паказваць гэтае паведамленне зноў</label>`,
+    },
+  },
+};
 
 export default class Layout {
   constructor(skycons) {
@@ -15,9 +73,6 @@ export default class Layout {
     this.main.classList.add('main-wrapper', 'flow-blocks-wrapper');
     this.bodyWrapper.append(this.main);
     document.body.append(this.bodyWrapper);
-
-    this.errorWrap = document.createElement('div');
-    this.errorWrap.classList.add('error-wrapper');
 
     this.body = document.body;
     this.isLangListExpand = false;
@@ -74,6 +129,7 @@ export default class Layout {
     this.langList = document.querySelector('.lang-list');
     this.langBtn = document.querySelector('.btn-controls_lang');
     this.searchField = document.querySelector('.search-field');
+    this.speechBtn = document.querySelector('.speech-btn');
   }
 
   insertBackground(imgUrl) {
@@ -159,6 +215,10 @@ export default class Layout {
     this.searchField.value = request;
   }
 
+  aniamtionMicrophone() {
+    this.speechBtn.classList.toggle('mic-animation');
+  }
+
   insertWeatherIcon(elem, icon) {
     const { icons, Skycons } = this.icons;
     const iconName = icon.toUpperCase().replace(/-/g, '_');
@@ -192,8 +252,10 @@ export default class Layout {
     }
   }
 
-  setContentLang(langObj) {
+  setContentLang(lang) {
+    const langObj = langBase[lang];
     const elements = this.langDependElements;
+
     for (let i = 0; i < elements.length; i += 1) {
       const prop = elements[i].dataset.lang;
       const text = langObj[prop];
@@ -202,8 +264,9 @@ export default class Layout {
     this.searchField.placeholder = langObj.searchPlaceholder;
   }
 
-  setBelLang(belLang) {
+  setBelLang(lang) {
     const element = this.elementBel;
+    const belLang = langBase[lang];
 
     for (let i = 0; i < element.length; i += 1) {
       const prop = element[i].dataset.bel;
@@ -260,9 +323,20 @@ export default class Layout {
     }
   }
 
-  errorRender(message) {
-    this.errorWrap.innerHTML = message;
-    document.body.append(this.errorWrap);
-    Controller.errorEvent(this.errorWrap);
+  errorRender(key, lang) {
+    const message = langBase[lang].errors[key];
+    const errorCloseBtn = '<div class="btn-close-modal">&times;</div>';
+
+    if (!this.errorWrapper) {
+      this.errorWrapper = document.createElement('div');
+      this.errorWrapper.classList.add('error-wrapper');
+      document.body.append(this.errorWrapper);
+    }
+
+    const errorBlock = document.createElement('div');
+    errorBlock.classList.add('error-block');
+
+    errorBlock.innerHTML = `${errorCloseBtn}${message}`;
+    this.errorWrapper.append(errorBlock);
   }
 }
