@@ -4,7 +4,7 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const ScriptExtHtmlWebpackPlugin = require('script-ext-html-webpack-plugin');
 
 module.exports = {
-  entry: './fancy-weather/src/index.js',
+  entry: './src/index.js',
   output: {
     filename: 'app.bundle.js',
     path: path.resolve(__dirname, 'dist'),
