@@ -37,7 +37,7 @@ module.exports = {
     ],
   },
   plugins: [new HtmlWebpackPlugin({
-    title: 'guessing weather',
+    title: 'fancy weather',
     inject: 'head',
   }),
   new MiniCssExtractPlugin({

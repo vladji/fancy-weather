@@ -1,4 +1,4 @@
-import './scss/style.css';
+import './styles/style.css';
 import Layout from './components/View';
 import Controller from './components/Controller';
 import Model from './components/Model';
