@@ -272,6 +272,7 @@ button {
   flex-grow: 1;
   height: 100%;
   padding: 0 12px;
+  color: #fff;
 }
 .control-search-wrap input::-webkit-input-placeholder {
   color: #fff;
