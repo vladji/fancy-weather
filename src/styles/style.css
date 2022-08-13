@@ -45,7 +45,7 @@ blockquote, q {
 
 blockquote:before, blockquote:after,
 q:before, q:after {
-  content: '';
+  content: "";
   content: none;
 }
 
@@ -54,41 +54,43 @@ table {
   border-spacing: 0;
 }
 
+input {
+  padding: 0;
+  border: 0;
+  background: initial;
+  outline: 0;
+}
+
 body {
   height: 100vh;
-  font-family: 'Montserrat', sans-serif;
+  font-family: "Montserrat", sans-serif;
   font-size: 16px;
   background-color: #8c8c8c;
   background-blend-mode: multiply;
   background-size: cover;
   background-repeat: no-repeat;
 }
-
 @media (max-width: 1180px) {
   body {
     font-size: 15px;
   }
 }
-
 @media (max-width: 1001px) {
   body {
     height: auto;
     font-size: 18px;
   }
 }
-
 @media (max-width: 540px) {
   body {
     font-size: 15px;
   }
 }
-
 @media (max-width: 399px) {
   body {
     font-size: 13px;
   }
 }
-
 @media (max-width: 360px) {
   body {
     font-size: 12px;
@@ -97,36 +99,30 @@ body {
 
 .body-wrapper {
   width: 90%;
-  -webkit-box-sizing: border-box;
-          box-sizing: border-box;
+  box-sizing: border-box;
   margin: 0 auto;
   padding: 4% 6%;
 }
-
 @media (max-width: 1100px) {
   .body-wrapper {
     padding: 6%;
   }
 }
-
 @media (max-width: 1001px) {
   .body-wrapper {
     width: 80%;
   }
 }
-
 @media (max-width: 864px) {
   .body-wrapper {
     width: 85%;
   }
 }
-
 @media (max-width: 770px) {
   .body-wrapper {
     width: 90%;
   }
 }
-
 @media (max-width: 690px) {
   .body-wrapper {
     width: 100%;
@@ -134,19 +130,12 @@ body {
 }
 
 .flow-blocks-wrapper {
-  display: -webkit-box;
-  display: -ms-flexbox;
   display: flex;
-  -webkit-box-pack: justify;
-      -ms-flex-pack: justify;
-          justify-content: space-between;
-  -ms-flex-flow: wrap;
-      flex-flow: wrap;
+  justify-content: space-between;
+  flex-flow: wrap;
 }
 
 .flex-block {
-  display: -webkit-box;
-  display: -ms-flexbox;
   display: flex;
 }
 
@@ -159,12 +148,10 @@ button {
 }
 
 .controls-block {
-  margin-bottom: 3%;
+  margin-bottom: 5%;
 }
 
 .control-bnt-wrap {
-  display: -webkit-box;
-  display: -ms-flexbox;
   display: flex;
   height: 40px;
   margin: 0 20px 30px 0;
@@ -181,20 +168,20 @@ button {
 }
 
 .btn-controls_image {
+  display: flex;
+  align-items: center;
+  justify-content: center;
   width: 50px;
-  margin-right: 13px;
+  height: 100%;
+  margin-right: 12px;
 }
-
 .btn-controls_image i {
-  font-size: 53px;
-  -webkit-transform: translateY(-6px);
-          transform: translateY(-6px);
+  font-size: 30px;
 }
 
 .expand-list-wrapper {
-  margin-right: 10px;
+  margin-right: 12px;
 }
-
 .expand-list-wrapper .btn-controls_lang {
   position: relative;
   width: 65px;
@@ -206,46 +193,39 @@ button {
   background-repeat: no-repeat;
   z-index: 10;
 }
-
 .expand-list-wrapper .expand-list-container {
   position: relative;
   top: -5%;
   overflow: hidden;
   z-index: 5;
 }
-
 .expand-list-wrapper .lang-list {
   position: absolute;
   top: -82%;
   width: 100%;
-  background-color: #ccccccd1;
+  background-color: rgba(204, 204, 204, 0.8196078431);
   border-bottom-right-radius: 4px;
   border-bottom-left-radius: 4px;
-  -webkit-box-shadow: 0 0 3px #888;
-          box-shadow: 0 0 3px #888;
+  box-shadow: 0 0 3px #888;
   z-index: 11;
   -webkit-animation: 0.5s ease-out;
           animation: 0.5s ease-out;
 }
-
 .expand-list-wrapper .lang-list li {
   padding: 20%;
   font-weight: 600;
   text-transform: uppercase;
   cursor: pointer;
 }
-
 .expand-list-wrapper .show-list {
   -webkit-animation-name: expand;
           animation-name: expand;
 }
-
 .expand-list-wrapper .hide-list {
   -webkit-animation-name: expand;
           animation-name: expand;
   animation-direction: reverse;
 }
-
 @-webkit-keyframes expand {
   from {
     top: -82%;
@@ -254,7 +234,6 @@ button {
     top: 0;
   }
 }
-
 @keyframes expand {
   from {
     top: -82%;
@@ -266,12 +245,14 @@ button {
 
 .btn-controls_temp-f {
   width: 40px;
+  height: 100%;
   border-top-right-radius: 0;
   border-bottom-right-radius: 0;
 }
 
 .btn-controls_temp-c {
   width: 40px;
+  height: 100%;
   border-top-left-radius: 0;
   border-bottom-left-radius: 0;
 }
@@ -281,40 +262,31 @@ button {
 }
 
 .control-search-wrap {
-  display: -webkit-box;
-  display: -ms-flexbox;
   display: flex;
   height: 40px;
+  border-radius: 4px;
+  color: #fff;
+  background-color: rgba(204, 204, 204, 0.5019607843);
 }
-
 .control-search-wrap input {
   width: 60%;
-  padding: 12px 20px;
-  border: 1px solid #ccc;
-  border: 0;
-  border-top-left-radius: 4px;
-  border-bottom-left-radius: 4px;
-  color: #fff;
-  background-color: #cccccc80;
-  outline: none;
+  height: 100%;
+  padding: 0 12px;
 }
-
 .control-search-wrap input::-webkit-input-placeholder {
   color: #fff;
 }
 
 .speech-btn {
-  font-size: 1.2rem;
-  color: #fff;
-  background-color: #cccccc80;
-}
-
-.speech-btn i {
-  padding: 12px 20px;
+  display: flex;
+  align-items: center;
+  height: 100%;
+  padding: 0 15px;
 }
 
 .btn-search {
-  width: 80px;
+  height: 100%;
+  padding: 0 10px;
   border-top-left-radius: 0;
   border-bottom-left-radius: 0;
 }
@@ -322,7 +294,6 @@ button {
 .mic-animation {
   position: relative;
 }
-
 .mic-animation:before, .mic-animation:after {
   content: "";
   position: absolute;
@@ -333,48 +304,37 @@ button {
   height: 20px;
   border-radius: 50%;
   border: 1px solid #fff;
-  -webkit-transform: translate(-45%, -48%);
-          transform: translate(-45%, -48%);
+  transform: translate(-45%, -48%);
 }
-
 .mic-animation:before {
   -webkit-animation: waveBefore 1s ease-in-out infinite;
           animation: waveBefore 1s ease-in-out infinite;
 }
-
 .mic-animation:after {
   -webkit-animation: waveAfter 1s ease-in-out infinite;
           animation: waveAfter 1s ease-in-out infinite;
 }
-
 @-webkit-keyframes waveBefore {
   to {
-    -webkit-transform: scale(2) translate(-30%, -30%);
-            transform: scale(2) translate(-30%, -30%);
+    transform: scale(2) translate(-30%, -30%);
     opacity: 0;
   }
 }
-
 @keyframes waveBefore {
   to {
-    -webkit-transform: scale(2) translate(-30%, -30%);
-            transform: scale(2) translate(-30%, -30%);
+    transform: scale(2) translate(-30%, -30%);
     opacity: 0;
   }
 }
-
 @-webkit-keyframes waveAfter {
   to {
-    -webkit-transform: scale(3) translate(-20%, -20%);
-            transform: scale(3) translate(-20%, -20%);
+    transform: scale(3) translate(-20%, -20%);
     opacity: 0;
   }
 }
-
 @keyframes waveAfter {
   to {
-    -webkit-transform: scale(3) translate(-20%, -20%);
-            transform: scale(3) translate(-20%, -20%);
+    transform: scale(3) translate(-20%, -20%);
     opacity: 0;
   }
 }
@@ -385,7 +345,6 @@ button {
   font-weight: 600;
   color: #ebebeb;
 }
-
 @media screen and (max-width: 1110px) {
   .content {
     width: 100%;
@@ -397,12 +356,9 @@ button {
 }
 
 .content__date {
-  display: -webkit-box;
-  display: -ms-flexbox;
   display: flex;
   margin-top: 3%;
-  -ms-flex-flow: wrap;
-      flex-flow: wrap;
+  flex-flow: wrap;
   font-size: 2em;
 }
 
@@ -416,12 +372,9 @@ button {
 }
 
 .today {
-  -webkit-box-align: end;
-      -ms-flex-align: end;
-          align-items: flex-end;
+  align-items: flex-end;
   margin: 5% 0 10%;
 }
-
 @media (max-width: 820px) {
   .today {
     display: block;
@@ -433,13 +386,11 @@ button {
 }
 
 .today__temperature {
-  -ms-flex-item-align: end;
-      align-self: flex-end;
+  align-self: flex-end;
   margin-right: 5%;
   font-size: 10em;
   line-height: 0.8;
 }
-
 @media (max-width: 690px) {
   .today__temperature {
     font-size: 9em;
@@ -472,11 +423,9 @@ button {
 }
 
 .daily__item-temperature {
-  -ms-flex-item-align: end;
-      align-self: flex-end;
+  align-self: flex-end;
   font-size: 3.5rem;
 }
-
 @media (max-width: 580px) {
   .daily__item-temperature {
     font-size: 2.5em;
@@ -492,7 +441,6 @@ button {
     width: 42px;
   }
 }
-
 @media (max-width: 340px) {
   .daily__icon-weather_size {
     width: 36px;
@@ -502,7 +450,6 @@ button {
 .map-wrapper {
   width: 35%;
 }
-
 @media screen and (max-width: 1110px) {
   .map-wrapper {
     width: 100%;
@@ -515,7 +462,6 @@ button {
   height: 70%;
   border-radius: 10px;
 }
-
 @media screen and (max-width: 1110px) {
   #map {
     height: 300px;
@@ -532,11 +478,9 @@ button {
   position: absolute;
   top: 20%;
   left: 50%;
-  -webkit-transform: translateX(-50%);
-          transform: translateX(-50%);
+  transform: translateX(-50%);
   z-index: 11;
 }
-
 @media (max-width: 690px) {
   .error-wrapper {
     width: 90%;
@@ -544,33 +488,27 @@ button {
 }
 
 .error-block {
-  -webkit-box-sizing: border-box;
-          box-sizing: border-box;
+  box-sizing: border-box;
   width: 100%;
   padding: 20px;
   margin: 20px auto;
   font-size: 1.2em;
   border-radius: 5px;
   color: #000;
-  background-color: #ffef91f2;
+  background-color: rgba(255, 239, 145, 0.9490196078);
 }
-
 .error-block label {
   display: block;
   margin-top: 20px;
-  font-size: .9rem;
+  font-size: 0.9rem;
 }
-
 .error-block label input {
   margin: 0 10px 0 0;
-  -webkit-transform: translateY(1px);
-          transform: translateY(1px);
+  transform: translateY(1px);
 }
-
 .error-block .btn-close-modal {
   float: right;
   margin: 0 0 20px 20px;
   font-size: 2.5rem;
-  line-height: .5;
-}
-/*# sourceMappingURL=style.css.map */
+  line-height: 0.5;
+}/*# sourceMappingURL=style.css.map */
