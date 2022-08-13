@@ -269,7 +269,7 @@ button {
   background-color: rgba(204, 204, 204, 0.5019607843);
 }
 .control-search-wrap input {
-  width: 60%;
+  flex-grow: 1;
   height: 100%;
   padding: 0 12px;
 }
