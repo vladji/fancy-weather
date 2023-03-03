@@ -36,6 +36,6 @@
     "webpack-dev-server": "^3.9.0"
   },
   "dependencies": {
-    "mapbox-gl": "^1.6.0"
+    "mapbox-gl": "^1.13.3"
   }
 }
