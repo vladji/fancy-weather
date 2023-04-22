@@ -94,7 +94,7 @@ export default class Model {
   getWeatherData() {
     this.getDate();
     let weatherData = null;
-    const PROXY_URL = 'https://sheltered-chamber-29439.herokuapp.com/';
+    const PROXY_URL = 'https://lit-retreat-31750.herokuapp.com/';
     try {
       weatherData = fetch(`
         ${PROXY_URL}${this.weatherApi}${this.location}?exclude=${this.wetherApiExclude}&units=${this.weatherApiUnits}&lang=${this.lang}&time=${this.dateUNIX}
